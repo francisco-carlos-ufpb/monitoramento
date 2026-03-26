@@ -1,0 +1,70 @@
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 07: FRACIONAMENTO ILÍCITO -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="fracionamento">
+    <div class="section-header">
+        <span class="section-num">07</span>
+        <h2 class="section-title">Fracionamento Ilícito</h2>
+    </div>
+    <p class="section-intro">Uma das fraudes mais fáceis de cometer e mais difíceis de provar — cada contrato individual
+        parece legítimo. A detecção exige visão agregada temporal e por objeto.</p>
+
+    <div class="limit-grid">
+        <div class="limit-card">
+            <div class="limit-val">R$ 50k</div>
+            <div class="limit-lbl">Obras e serviços de engenharia geral (Lei 14.133/2021, art. 75)</div>
+        </div>
+        <div class="limit-card">
+            <div class="limit-val">R$ 100k</div>
+            <div class="limit-lbl">Obras e serviços de engenharia de infraestrutura</div>
+        </div>
+        <div class="limit-card">
+            <div class="limit-val">R$ 50k</div>
+            <div class="limit-lbl">Outros serviços e compras em geral</div>
+        </div>
+        <div class="limit-card">
+            <div class="limit-val">10%</div>
+            <div class="limit-lbl">Limite acumulado anual por objeto / unidade gestora</div>
+        </div>
+    </div>
+
+    <div class="card-grid" style="gap:10px">
+        <div class="card">
+            <div class="card-header"><span class="card-title">Bunching estatístico</span><span
+                    class="badge badge-red">Crítico</span></div>
+            <div class="card-body">Em distribuição legítima, contratos se distribuem uniformemente abaixo do limite.
+                Pico anômalo imediatamente abaixo (ex: R$49.500–R$49.999) indica manipulação deliberada. Técnica
+                originada na detecção de evasão fiscal (Kleven &amp; Waseem, 2013).</div>
+            <div class="card-formula">bunching_score = f([0.95×limite, limite]) / f([0.85×limite, 0.95×limite]) → ratio
+                &gt;&gt; 1 = fracionamento</div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span class="card-title">Similaridade textual de objetos (NLP)</span><span
+                    class="badge badge-teal">NLP</span></div>
+            <div class="card-body">Gestores sofisticados variam levemente a descrição do objeto para dificultar
+                agrupamento automático. TF-IDF + cosseno entre descrições revela o padrão.</div>
+            <div class="card-formula">similarity(objeto_A, objeto_B) &gt; 0.70 + mesmo_fornecedor + mesmo_período</div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span class="card-title">Intervalo entre contratos consecutivos</span><span
+                    class="badge badge-red">Crítico</span></div>
+            <div class="card-body">Contratos do mesmo objeto e fornecedor assinados com intervalo de dias ou semanas —
+                necessidades previsíveis devem ser licitadas globalmente.</div>
+            <div class="card-formula">Δt(contrato_i, contrato_i+1) &lt; 30 dias + mesmo_objeto_fornecedor</div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span class="card-title">Fracionamento entre unidades gestoras</span><span
+                    class="badge badge-purple">Sofisticado</span></div>
+            <div class="card-body">Objeto único dividido entre unidades administrativas distintas do mesmo órgão
+                (superintendências regionais), cada uma abaixo do limite individual.</div>
+            <div class="card-formula">Σ dispensas(mesmo_CNPJ_fornecedor) por unidades_do_mesmo_órgão &gt; limite</div>
+        </div>
+    </div>
+
+    <div class="highlight-box">
+        <div class="highlight-box-title">Oportunidade de pesquisa original</div>
+        <div class="highlight-box-body">A aplicação da técnica de bunching (originada na economia fiscal para detectar
+            evasão tributária) à detecção de fracionamento ilícito em contratações públicas tem pouquíssima literatura
+            empírica no Brasil — representando uma contribuição metodológica original relevante para o doutorado.</div>
+    </div>
+</section>

@@ -1,0 +1,199 @@
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 10: METODOLOGIA -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="metodologia">
+    <div class="section-header">
+        <span class="section-num">10</span>
+        <h2 class="section-title">Framework Metodológico Integrado</h2>
+    </div>
+    <p class="section-intro">Arquitetura metodológica para pesquisa de doutorado em detecção de fraudes em licitações
+        públicas — integrando fontes de dados, técnicas e validação empírica.</p>
+
+    <div style="margin-bottom:28px">
+        <div class="section-intro"
+            style="font-size:13px; margin-bottom:14px; font-style:normal; font-weight:600; color:#793904">Pipeline de
+            Análise em Três Camadas</div>
+        <div class="method-steps">
+            <div class="method-step">
+                <div class="method-step-title">Coleta e normalização de dados</div>
+                <div class="method-step-body">Extrair dados do PNCP (API REST), SIASG, dump CNPJ da Receita Federal,
+                    eSocial (via CGU/TCU), Painel de Preços e TSE. Normalizar endereços (fuzzy matching), deduplificar
+                    CNPJs e criar chaves de cruzamento entre bases.</div>
+            </div>
+            <div class="method-step">
+                <div class="method-step-title">Análise estrutural — grafo de relacionamentos</div>
+                <div class="method-step-body">Construir grafo heterogêneo com CPFs, CNPJs, contratos e órgãos como nós.
+                    Calcular betweenness centrality, eigenvector centrality e detectar comunidades (Louvain). Rastrear
+                    caminhos de comprimento ≤ 2 entre servidores e empresas vencedoras.</div>
+            </div>
+            <div class="method-step">
+                <div class="method-step-title">Análise estatística multivariada</div>
+                <div class="method-step-body">Correlação de lances (Pearson/Spearman), Lei de Benford, bunching por
+                    limite de dispensa, HHI de concentração de contratos, análise temporal de spikes pós-troca de
+                    gestor, coeficiente de variação por certame.</div>
+            </div>
+            <div class="method-step">
+                <div class="method-step-title">Análise textual (NLP)</div>
+                <div class="method-step-body">TF-IDF + similaridade de cosseno entre editais e propostas. BERTimbau para
+                    classificação de cláusulas restritivas. NER com dicionário de termos proprietários (INPI). Análise
+                    de densidade e complexidade de requisitos por edital.</div>
+            </div>
+            <div class="method-step">
+                <div class="method-step-title">Construção do índice composto e validação</div>
+                <div class="method-step-body">Combinar os 18 red flags em score ponderado. Treinar XGBoost com casos
+                    julgados pelo TCU como ground truth (y=irregular/regular). Usar SHAP para interpretabilidade dos
+                    pesos. Validar com conjunto de teste independente.</div>
+            </div>
+            <div class="method-step">
+                <div class="method-step-title">Aplicação em escala e análise sistêmica</div>
+                <div class="method-step-body">Aplicar o índice a todos os certames do PNCP para identificar padrões por
+                    setor, órgão e região. Análise de evolução temporal. Comparar com casos já identificados pela CGU
+                    para calibração final do modelo.</div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-bottom:28px">
+        <div class="section-intro"
+            style="font-size:13px; margin-bottom:14px; font-style:normal; font-weight:600; color:#793904">Fontes de
+            Dados Abertas</div>
+        <div class="source-grid">
+            <div class="source-card">
+                <div class="source-title">Contratos e licitações</div>
+                <ul class="source-list">
+                    <li>PNCP (API REST aberta)</li>
+                    <li>SIASG / ComprasNet</li>
+                    <li>SIAFI (empenhos)</li>
+                    <li>Portais estaduais (BEC, SIAD)</li>
+                    <li>Diário Oficial (DOU)</li>
+                </ul>
+            </div>
+            <div class="source-card">
+                <div class="source-title">Empresas e sócios</div>
+                <ul class="source-list">
+                    <li>CNPJ/QSA — Receita Federal</li>
+                    <li>Juntas Comerciais (DREI)</li>
+                    <li>SICAF · CEIS · CEPIM</li>
+                    <li>NF-e / SPED</li>
+                    <li>eSocial (RAIS, CAGED)</li>
+                </ul>
+            </div>
+            <div class="source-card">
+                <div class="source-title">Servidores públicos</div>
+                <ul class="source-list">
+                    <li>SIAPE (servidores federais)</li>
+                    <li>Portal da Transparência</li>
+                    <li>Declarações de bens CGU</li>
+                    <li>DOU (nomeações, exonerações)</li>
+                    <li>eSocial (vínculos)</li>
+                </ul>
+            </div>
+            <div class="source-card">
+                <div class="source-title">Referências de preço</div>
+                <ul class="source-list">
+                    <li>Painel de Preços (SEGES)</li>
+                    <li>SINAPI (Caixa/IBGE)</li>
+                    <li>SICRO (DNIT)</li>
+                    <li>CATMAT · CATSER</li>
+                    <li>SIASG histórico</li>
+                </ul>
+            </div>
+            <div class="source-card">
+                <div class="source-title">Controle e sanções</div>
+                <ul class="source-list">
+                    <li>Acórdãos TCU (e-TCU)</li>
+                    <li>CGU (PADs, sindicâncias)</li>
+                    <li>CADIN · PGFN</li>
+                    <li>TRF / STJ (processos)</li>
+                    <li>CEAF · CEIS</li>
+                </ul>
+            </div>
+            <div class="source-card">
+                <div class="source-title">Complementares</div>
+                <ul class="source-list">
+                    <li>TSE (doações eleitorais)</li>
+                    <li>COAF (movimentações)</li>
+                    <li>IPTU municipal</li>
+                    <li>Cartórios (procurações)</li>
+                    <li>Google Maps API</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-bottom:28px">
+        <div class="section-intro"
+            style="font-size:13px; margin-bottom:14px; font-style:normal; font-weight:600; color:#793904">
+            Referências-chave para o Referencial Teórico</div>
+        <div class="card-grid card-grid-2">
+            <div class="card">
+                <div class="card-title" style="margin-bottom:6px">Fazekas &amp; Kocsis (2017)</div>
+                <div class="card-body">Corrupt Contracting: Controlling Partisan Favoritism in Public Procurement. Um
+                    dos trabalhos mais citados sobre red flags em contratação pública europeia. Government and
+                    Opposition.</div>
+            </div>
+            <div class="card">
+                <div class="card-title" style="margin-bottom:6px">Kleven &amp; Waseem (2013)</div>
+                <div class="card-body">Using Notches to Uncover Optimization Frictions. Referência metodológica para a
+                    técnica de bunching aplicada a limiares regulatórios. The Quarterly Journal of Economics.</div>
+            </div>
+            <div class="card">
+                <div class="card-title" style="margin-bottom:6px">Acórdão TCU 2.622/2013-Plenário</div>
+                <div class="card-body">Parâmetros de BDI por tipo de obra de engenharia. Referência obrigatória para
+                    metodologia de detecção de sobrepreço em construção civil.</div>
+            </div>
+            <div class="card">
+                <div class="card-title" style="margin-bottom:6px">CGU — Sistema Alice</div>
+                <div class="card-body">Sistema de Análise de Licitações e Contratos da Controladoria-Geral da União.
+                    Benchmark nacional para detecção automatizada de irregularidades.</div>
+            </div>
+            <div class="card">
+                <div class="card-title" style="margin-bottom:6px">Lei 14.133/2021</div>
+                <div class="card-body">Nova Lei de Licitações e Contratos Administrativos. Art. 74–75 (hipóteses de
+                    dispensa), art. 125 (limites de aditivo), art. 25 §2° (superfaturamento).</div>
+            </div>
+            <div class="card">
+                <div class="card-title" style="margin-bottom:6px">GRECO — Conselho da Europa</div>
+                <div class="card-body">Metodologia consolidada para avaliação de risco de integridade em contratações
+                    públicas. Relatórios comparativos internacionais disponíveis publicamente.</div>
+            </div>
+            <div class="card">
+                <div class="card-title" style="margin-bottom:6px">Governance Risk Assessment System (GRAS)</div>
+                <div class="card-body">Advanced Data Analytics for Detecting Fraud, Corruption, and Collusion in Public
+                    Expenditures.</div>
+            </div>
+            <div class="card">
+                <div class="card-title" style="margin-bottom:6px">Inteligência Artificial e o Risco de Fraude em
+                    Processos Licitatórios:
+                    Mecanismos, Evidências e Salvaguardas</div>
+                <div class="card-body">Como a IA pode ser usada indevidamente em licitações, quais sinais devem ser
+                    observados por auditores e quais contramedidas são recomendáveis para proteger o
+                    interesse público e a integridade dos processos licitatórios.</div>
+            </div>
+            <div class="card">
+                <div class="card-title" style="margin-bottom:6px">Classificação de fraudes em licitações públicas
+                    através do agrupamento de empresas em conluios</div>
+                <div class="card-body">Agrupar as empresas que participam das mesmas licitacões fraudulentas,
+                    quantificando a probabilidade de cada grupo ser conluio, e aplicar esta métrica em algoritmos de
+                    aprendizado de máquina para classificar novas licitacões.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="highlight-box">
+        <div class="highlight-box-title">Contribuições originais identificadas para o doutorado</div>
+        <div class="highlight-box-body">
+            <strong style="color:#793904">1. Análise textual de editais em escala:</strong> Aplicação de BERTimbau ao
+            corpus do PNCP para classificar cláusulas restritivas — maioria dos trabalhos analisa apenas variáveis
+            numéricas.<br><br>
+            <strong style="color:#793904">2. Bunching em contratações públicas:</strong> Aplicação da técnica de
+            bunching (originada em evasão fiscal) para detecção de fracionamento — praticamente inexplorada
+            empiricamente no Brasil.<br><br>
+            <strong style="color:#793904">3. Emergências crônicas:</strong> Padrão de emergências que se repetem todo
+            ano no mesmo objeto como indicador de dispensa indevida estrutural — tema pouco explorado com evidência
+            quantitativa.<br><br>
+            <strong style="color:#793904">4. Índice composto validado:</strong> Formalizar o framework de red flags como
+            índice quantitativo com pesos calibrados via XGBoost + SHAP, treinado em casos TCU como ground truth.
+        </div>
+    </div>
+</section>

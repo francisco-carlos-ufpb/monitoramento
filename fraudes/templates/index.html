@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Início | Licitai Insight{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="row align-items-center mb-5 fade-in">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <h1 class="display-4 mb-3">Detectando Irregularidades com <span class="text-info">Inteligência</span></h1>
+            <p class="lead text-secondary mb-4">
+                Plataforma avançada para monitoramento de licitações, análise de editais e detecção precoce de padrões de fraude.
+            </p>
+            <div class="d-flex gap-3">
+                <a href="{% url 'fraude_guia' %}" class="btn btn-premium">
+                    <i class="bi bi-book-half"></i> Acessar Guia de Fraudes
+                </a>
+                <a href="/api/licitacoes/" class="btn btn-outline-dark btn-premium bg-white text-dark">
+                    <i class="bi bi-gear"></i> Explorar API
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-6 text-center">
+            <div class="p-5 bg-white shadow-lg rounded-circle d-inline-block position-relative">
+                <i class="bi bi-shield-check text-info" style="font-size: 8rem;"></i>
+                <div class="position-absolute top-0 end-0 p-3 bg-info text-white rounded-circle shadow">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats / Cards -->
+    <div class="row g-4 mb-5 fade-in" style="animation-delay: 0.2s;">
+        <div class="col-md-4">
+            <div class="card card-premium p-4 h-100">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-info bg-opacity-10 p-3 rounded-3 text-info me-3">
+                        <i class="bi bi-search" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <h3 class="h5 mb-0">Monitoramento</h3>
+                </div>
+                <p class="text-secondary small">Acompanhamento contínuo de novos editais e processos publicados no PNCP.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-premium p-4 h-100">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary bg-opacity-10 p-3 rounded-3 text-primary me-3">
+                        <i class="bi bi-graph-up-arrow" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <h3 class="h5 mb-0">Análise de Risco</h3>
+                </div>
+                <p class="text-secondary small">Aplicação de Red Flags e modelos estatísticos para identificar comportamentos suspeitos.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-premium p-4 h-100">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-success bg-opacity-10 p-3 rounded-3 text-success me-3">
+                        <i class="bi bi-file-earmark-check" style="font-size: 1.5rem;"></i>
+                    </div>
+                    <h3 class="h5 mb-0">Integridade</h3>
+                </div>
+                <p class="text-secondary small">Relatórios detalhados para órgãos de controle e suporte à decisão.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 08: DISPENSA INDEVIDA -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="dispensa">
+    <div class="section-header">
+        <span class="section-num">08</span>
+        <h2 class="section-title">Dispensa Indevida de Licitação</h2>
+    </div>
+    <p class="section-intro">A porta de entrada mais comum para a corrupção sistêmica. A Lei 14.133/2021 lista hipóteses
+        taxativas (art. 74–75) — as mais abusadas estão detalhadas abaixo.</p>
+
+    <div class="accordion">
+        <div class="acc-item open">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>Hipóteses Legais Mais Abusadas</span><span class="acc-arrow">›</span>
+            </button>
+            <div class="acc-body">
+                <div class="card-grid" style="gap:10px">
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Emergência fabricada (art. 75,
+                                VIII)</span><span class="badge badge-red">Mais frequente</span></div>
+                        <div class="card-body">Situação de urgência criada ou agravada pela omissão do gestor que não
+                            planejou a contratação. Padrões suspeitos: emergências que se repetem todo ano no mesmo
+                            objeto.</div>
+                        <div class="card-formula">n_emergências_mesmo_objeto_por_ano &gt; 1 = emergência estrutural
+                            disfarçada</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Notória especialização fictícia (art. 74,
+                                III)</span><span class="badge badge-red">Alto abuso</span></div>
+                        <div class="card-body">Contratação direta alegando expertise única. Abusada para consultorias,
+                            advogados e palestrantes quando na verdade há múltiplos concorrentes potenciais.</div>
+                        <div class="card-formula">n_concorrentes_potenciais &gt; 3 → inexigibilidade questionável</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Fornecedor exclusivo fictício (art. 74,
+                                I)</span><span class="badge badge-amber">Alto risco</span></div>
+                        <div class="card-body">Declaração de exclusividade quando há concorrência. Instrução processual
+                            superficial com especificações que artificialmente eliminam concorrentes.</div>
+                        <div class="card-formula">n_fornecedores_CATMAT/CATSER &gt; 1 → exclusividade falsa</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="acc-item">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>Padrões Quantitativos de Detecção</span><span class="acc-arrow">›</span>
+            </button>
+            <div class="acc-body">
+                <div class="card-grid" style="gap:10px">
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Taxa de dispensa por órgão</span><span
+                                class="badge badge-red">Crítico</span></div>
+                        <div class="card-body">Proporção de contratos via dispensa/inexigibilidade sobre o total. Órgãos
+                            com taxa acima de 2σ da média do setor são candidatos prioritários a auditoria.</div>
+                        <div class="card-formula">taxa_dispensa = n_dispensas / n_contratos_total · z-score vs. média
+                            setor &gt; 2σ</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Concentração em fornecedor único
+                                (HHI)</span><span class="badge badge-red">Crítico</span></div>
+                        <div class="card-body">Índice Herfindahl-Hirschman aplicado à distribuição de contratos por
+                            fornecedor dentro de um órgão. Alta concentração indica captura institucional.</div>
+                        <div class="card-formula">HHI_dispensa(órgão) = Σ(share_i)² → &gt; 0.25 = mercado capturado
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Spike após troca de gestor</span><span
+                                class="badge badge-amber">Alto risco</span></div>
+                        <div class="card-body">Aumento súbito de dispensas coincidente com nomeação de novo ordenador de
+                            despesa — gestor direcionando contratações antes de estabelecer controles.</div>
+                        <div class="card-formula">Δ(n_dispensas) em [t_nomeação, t_nomeação + 90d] &gt; 2σ = alerta
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

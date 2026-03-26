@@ -1,0 +1,55 @@
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 03: ASSOCIAÇÕES OCULTAS -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="associacoes">
+    <div class="section-header">
+        <span class="section-num">03</span>
+        <h2 class="section-title">Associações Ocultas</h2>
+    </div>
+    <p class="section-intro">Vínculos não declarados entre agentes públicos e fornecedores. É o núcleo onde corrupção e
+        conluio se encontram. A análise de grafos heterogêneos é a técnica mais robusta para detecção.</p>
+
+    <div class="card-grid card-grid-2">
+        <div class="card">
+            <div class="card-header"><span class="card-title">Sócio ou familiar como representante</span><span
+                    class="badge badge-red">Crítico</span></div>
+            <div class="card-body">CPF do servidor aparece como sócio, administrador ou procurador da empresa vencedora
+                — ou parente de 1º/2º grau ocupa essa posição.</div>
+            <div class="card-formula">CPF_servidor ∈ QSA_empresa OU CPF_familiar ∈ QSA_empresa</div>
+            <div class="card-fonte">Fontes: CNPJ/Receita · SIAPE · Portal da Transparência</div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span class="card-title">Porta giratória (revolving door)</span><span
+                    class="badge badge-red">Crítico</span></div>
+            <div class="card-body">Ex-servidor passa a integrar empresa que foi por ele fiscalizada ou favorecida.
+                Cruzar data de exoneração com data de entrada na QSA e histórico de contratos supervisionados.</div>
+            <div class="card-formula">dt_entrada_QSA - dt_exoneração &lt; 12 meses + contratos_supervisionados &gt; 0
+            </div>
+            <div class="card-fonte">Fontes: SIAPE · CNPJ/Receita · PNCP · Diário Oficial</div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span class="card-title">Pessoa interposta (laranja)</span><span
+                    class="badge badge-red">Crítico</span></div>
+            <div class="card-body">Terceiro sem perfil empresarial aparece como sócio nominal, ocultando o real
+                beneficiário. Detectar por inconsistência entre renda declarada e participação societária.</div>
+            <div class="card-formula">renda_sócio &lt;&lt; porte_empresa OU sócio com QSAs em setores distintos</div>
+            <div class="card-fonte">Fontes: CNPJ/Receita · DIRPF · TSE (doações eleitorais)</div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span class="card-title">Doações eleitorais cruzadas</span><span
+                    class="badge badge-purple">Complementar</span></div>
+            <div class="card-body">Empresa contratada ou seus sócios fizeram doações ao político que nomeia o gestor
+                responsável pela licitação. Correlacionar com volume de contratos recebidos.</div>
+            <div class="card-formula">doação_TSE(sócio → político) × contratos_recebidos → correlação temporal</div>
+            <div class="card-fonte">Fontes: TSE (CAND/RECEITA) · PNCP · Diário Oficial</div>
+        </div>
+    </div>
+
+    <div class="highlight-box">
+        <div class="highlight-box-title">Análise de Grafo — Estratégia Recomendada</div>
+        <div class="highlight-box-body">Criar grafo bipartido com dois tipos de nós: pessoas (CPF) e entidades (CNPJ,
+            órgão, contrato). Arestas representam relações (sócio-de, fiscalizou, assinou, subcontratou). Um caminho de
+            comprimento ≤ 2 entre servidor e empresa é sinal forte de associação oculta. Algoritmo Louvain para detecção
+            de comunidades (Q &gt; 0.3). Ferramentas: NetworkX (Python), Neo4j, Gephi.</div>
+    </div>
+</section>

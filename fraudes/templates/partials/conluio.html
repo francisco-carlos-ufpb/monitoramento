@@ -1,0 +1,108 @@
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 02: CONLUIO -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="conluio">
+    <div class="section-header">
+        <span class="section-num">02</span>
+        <h2 class="section-title">Conluio entre Licitantes</h2>
+    </div>
+    <p class="section-intro">Acordo entre empresas concorrentes para eliminar a competição real. É um dos padrões mais
+        difíceis de provar, mas também um dos mais ricos em sinais estatísticos.</p>
+
+    <div class="accordion">
+        <div class="acc-item open">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>Comportamento de Lances</span><span class="acc-arrow">›</span>
+            </button>
+            <div class="acc-body">
+                <div class="card-grid" style="gap:10px">
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Cobertura de lance (cover bidding)</span><span
+                                class="badge badge-red">Crítico</span></div>
+                        <div class="card-body">Empresa B apresenta lance propositalmente mais alto que A para simular
+                            competição. Variáveis: margem entre 1º e 2º colocado, frequência do mesmo par
+                            vencedor/perdedor em múltiplos certames.</div>
+                        <div class="card-formula">desvio = (lance_2 - lance_1) / lance_1 → suspeito se sistematicamente
+                            &lt; 5%</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Rodízio de vencedores</span><span
+                                class="badge badge-red">Crítico</span></div>
+                        <div class="card-body">Empresas do mesmo grupo alternam vitórias por lote ou por período. Sinal:
+                            correlação negativa entre vitórias de A e vitórias de B no mesmo órgão ao longo do tempo.
+                        </div>
+                        <div class="card-formula">win_rate(A) × win_rate(B) por órgão/período → padrão alternado</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Desistências estratégicas</span><span
+                                class="badge badge-amber">Médio risco</span></div>
+                        <div class="card-body">Empresa entra no processo e retira proposta pouco antes do fechamento.
+                            Verificar taxa de retirada, momento da desistência e cruzamento com certames futuros.</div>
+                        <div class="card-formula">tempo_desistencia / tempo_total_certame → suspeito se &gt; 0.8</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="acc-item">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>Vínculos entre Empresas</span><span class="acc-arrow">›</span>
+            </button>
+            <div class="acc-body">
+                <div class="card-grid" style="gap:10px">
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Metadados idênticos em propostas</span><span
+                                class="badge badge-red">Crítico</span></div>
+                        <div class="card-body">Propostas de empresas diferentes geradas pelo mesmo usuário, mesma
+                            máquina ou com diferença de minutos. Extrair metadados de PDFs (autor, criador, timestamp).
+                        </div>
+                        <div class="card-formula">|timestamp_A - timestamp_B| &lt; 60s → suspeito; autor_A == autor_B →
+                            crítico</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Rede de relacionamento (grafo)</span><span
+                                class="badge badge-teal">Avançado</span></div>
+                        <div class="card-body">Modelar empresas, sócios, agentes públicos e contratos como nós de um
+                            grafo. Detectar comunidades via Louvain ou Girvan-Newman. Ferramentas: NetworkX, Neo4j.
+                        </div>
+                        <div class="card-formula">betweenness_centrality, modularidade Q &gt; 0.3 = comunidade
+                            significativa</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="acc-item">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>Análise Estatística</span><span class="acc-arrow">›</span>
+            </button>
+            <div class="acc-body">
+                <div class="card-grid" style="gap:10px">
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Lei de Benford</span><span
+                                class="badge badge-teal">Avançado</span></div>
+                        <div class="card-body">Distribuição dos primeiros dígitos dos valores de lance deve seguir
+                            padrão logarítmico natural. Desvio significativo indica manipulação.</div>
+                        <div class="card-formula">P(d) = log₁₀(1 + 1/d) → teste χ² ou KS contra distribuição observada
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Coeficiente de variação de
+                                propostas</span><span class="badge badge-amber">Médio risco</span></div>
+                        <div class="card-body">Em mercados competitivos, propostas variam significativamente. Baixo CV
+                            entre concorrentes em múltiplos certames indica coordenação de preços.</div>
+                        <div class="card-formula">CV = σ(lances) / μ(lances) → suspeito se CV &lt; 0.02 sistematicamente
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Detecção de anomalia (ML)</span><span
+                                class="badge badge-teal">Avançado</span></div>
+                        <div class="card-body">Isolation Forest, DBSCAN ou Autoencoder para identificar certames fora do
+                            padrão multivariado. Features: n_participantes, spread_lances, taxa_desistência,
+                            tempo_resposta.</div>
+                        <div class="card-formula">Isolation Forest: anomaly_score → threshold via percentil 95 do
+                            conjunto</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

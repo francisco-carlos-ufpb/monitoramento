@@ -1,0 +1,70 @@
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 06: SOBREPREÇO E SUPERFATURAMENTO -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="sobreprecio">
+    <div class="section-header">
+        <span class="section-num">06</span>
+        <h2 class="section-title">Sobrepreço e Superfaturamento</h2>
+    </div>
+    <p class="section-intro">Dois conceitos frequentemente confundidos com implicações metodológicas distintas. A
+        distinção correta é fundamental para construir pipelines de detecção adequados.</p>
+
+    <div class="compare-grid" style="margin-bottom:20px">
+        <div class="compare-card compare-red">
+            <div class="compare-title">Sobrepreço</div>
+            <div class="compare-body">Preço unitário contratado <strong>acima</strong> do valor de mercado. O problema
+                está no <strong>preço</strong> — o item pode ter sido entregue corretamente, mas foi cobrado a mais por
+                unidade. Ocorre <strong>antes ou na contratação</strong> — no orçamento, no edital ou na proposta.</div>
+        </div>
+        <div class="compare-card compare-amber">
+            <div class="compare-title">Superfaturamento</div>
+            <div class="compare-body">Cobrança por <strong>quantidade, qualidade ou especificação</strong> diferente do
+                entregue. O problema está na <strong>execução</strong> — preço pode ser razoável, mas entregou-se menos,
+                pior ou diferente. Ocorre <strong>durante a execução</strong> — nas medições e pagamentos.</div>
+        </div>
+    </div>
+
+    <div class="formula-block">dano_total = sobrepreço_unitário × qtd_contratada + (qtd_contratada − qtd_entregue) ×
+        preço_pago</div>
+
+    <div class="card-grid" style="gap:10px; margin-top:16px">
+        <div class="card">
+            <div class="card-header"><span class="card-title">Detecção de sobrepreço — pesquisa de preços</span><span
+                    class="badge badge-red">Sobrepreço</span></div>
+            <div class="card-body">Comparar com Painel de Preços, SINAPI, SICRO e NF-e similares. TCU usa desvio de 10%
+                acima da mediana como limiar relevante.</div>
+            <div class="card-formula">(preço_contratado - mediana_mercado) / mediana_mercado &gt; 0.10 = sobrepreço
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span class="card-title">Detecção de sobrepreço — BDI irregular</span><span
+                    class="badge badge-red">Sobrepreço</span></div>
+            <div class="card-body">BDI acima do padrão setorial inflaciona o preço final. TCU fixou parâmetros por tipo
+                de obra (Acórdão 2.622/2013).</div>
+            <div class="card-formula">BDI obras normais: 22–25% · BDI equipamentos: 12–15% · acima = sobrepreço</div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span class="card-title">Detecção de superfaturamento — medições</span><span
+                    class="badge badge-amber">Superfaturamento</span></div>
+            <div class="card-body">Comparar boletins de medição com evidências físicas: fotos georreferenciadas, laudos
+                técnicos, imagens de satélite (obras).</div>
+            <div class="card-formula">superfaturamento_qtd = (qtd_medida - qtd_executada) × preço_unitário_pago</div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span class="card-title">Jogo de planilha (price loading)</span><span
+                    class="badge badge-red">Combinado</span></div>
+            <div class="card-body">Licitante oferece preços altos em itens com grande volume previsto e baixos em itens
+                de baixo volume — total competitivo, mas execução maximiza recebimento.</div>
+            <div class="card-formula">correlação entre desvio_preço_unitário_i e variação_volume_i = jogo de planilha
+            </div>
+        </div>
+    </div>
+
+    <div class="highlight-box">
+        <div class="highlight-box-title">Ferramentas oficiais de referência de preços</div>
+        <div class="highlight-box-body"><strong>SINAPI</strong> (Caixa/IBGE) — construção civil, atualizado mensalmente
+            por estado. <strong>SICRO</strong> (DNIT) — obras rodoviárias. <strong>Painel de Preços</strong> (SEGES/MGI)
+            — compras federais, API pública disponível. <strong>SIASG/Comprasnet</strong> — histórico de preços
+            praticados.</div>
+    </div>
+</section>

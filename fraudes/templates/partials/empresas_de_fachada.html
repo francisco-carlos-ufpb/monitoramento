@@ -1,0 +1,66 @@
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 05: EMPRESAS DE FACHADA -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="fachada">
+    <div class="section-header">
+        <span class="section-num">05</span>
+        <h2 class="section-title">Empresas de Fachada (Shell Companies)</h2>
+    </div>
+    <p class="section-intro">A camada de ocultação mais usada. A detecção eficaz exige cruzar sinais de múltiplas
+        fontes: cadastrais, operacionais e financeiros simultaneamente.</p>
+
+    <div class="card-grid card-grid-2">
+        <div class="card">
+            <div class="card-header"><span class="card-title">Endereço inexistente ou inidôneo</span><span
+                    class="badge badge-red">Crítico</span></div>
+            <div class="card-body">Sede cadastrada no CNPJ não existe fisicamente, é terreno baldio, imóvel residencial
+                simples, coworking sem registro ou escritório virtual.</div>
+            <div class="card-formula">geocode(endereço_CNPJ) → validar contra IPTU + Google Maps API</div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span class="card-title">Múltiplos CNPJs no mesmo endereço</span><span
+                    class="badge badge-red">Crítico</span></div>
+            <div class="card-body">Dezenas ou centenas de empresas cadastradas no mesmo endereço — padrão típico de
+                fábrica de CNPJs.</div>
+            <div class="card-formula">n_CNPJs_endereço &gt; 10 (residencial) ou &gt; 50 (qualquer) = fábrica de CNPJ
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span class="card-title">Ausência de funcionários (eSocial)</span><span
+                    class="badge badge-red">Crítico</span></div>
+            <div class="card-body">Empresa que executa contratos de grande vulto sem nenhum empregado registrado no
+                eSocial. Impossibilidade operacional comprovável.</div>
+            <div class="card-formula">n_vínculos_eSocial = 0 + valor_contratos_ativos &gt; R$500k</div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span class="card-title">CNAE incompatível com objeto</span><span
+                    class="badge badge-red">Crítico</span></div>
+            <div class="card-body">Empresa cadastrada para atividade econômica completamente diferente do objeto
+                licitado.</div>
+            <div class="card-formula">similarity(CNAE_empresa, CATMAT/CATSER_objeto) &lt; 0.30 = incompatível</div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span class="card-title">Receita quase 100% pública</span><span
+                    class="badge badge-amber">Alto risco</span></div>
+            <div class="card-body">Empresa tem 95%+ da receita de contratos públicos com um único órgão — sem carteira
+                de clientes privados.</div>
+            <div class="card-formula">receita_pública / receita_total &gt; 0.95 + n_clientes_privados &lt; 2</div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span class="card-title">Ciclo abertura–contratos–encerramento</span><span
+                    class="badge badge-purple">Avançado</span></div>
+            <div class="card-body">CPF que abre empresa, vence contratos, encerra e repete o ciclo — evitando
+                fiscalização contínua.</div>
+            <div class="card-formula">ciclo: abertura → contratos → encerramento → nova abertura &lt; 3 anos médio</div>
+        </div>
+    </div>
+
+    <div class="highlight-box">
+        <div class="highlight-box-title">Score composto para triagem</div>
+        <div class="highlight-box-body">Combine os sinais em um score ponderado: endereço inidôneo (peso 2), múltiplos
+            CNPJs (peso 2), CNPJ recém-criado (peso 1.5), ausência de funcionários (peso 2), CNAE incompatível (peso 2),
+            receita 100% pública (peso 1.5), capital irrisório (peso 1), dívidas fiscais (peso 1). Score &gt; 50% do
+            máximo → auditoria prioritária. Treinamento supervisionado (XGBoost + SHAP) com casos TCU como ground truth.
+        </div>
+    </div>
+</section>

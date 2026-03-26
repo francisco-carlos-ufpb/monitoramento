@@ -1,0 +1,278 @@
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 09: RED FLAGS -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="redflags">
+    <div class="section-header">
+        <span class="section-num">09</span>
+        <h2 class="section-title">Catálogo de Red Flags</h2>
+    </div>
+    <p class="section-intro">18 indicadores de alerta organizados por fase do processo licitatório e severidade. Síntese
+        operacional de todos os mecanismos de fraude.</p>
+
+    <div style="margin-bottom:20px">
+        <div class="section-intro"
+            style="font-size:13px; margin-bottom:12px; font-style:normal; font-weight:600; color:#793904">Fase
+            Pré-licitatória</div>
+        <div class="rf-list">
+            <div class="rf-item">
+                <div class="rf-num">RF01</div>
+                <div class="rf-content">
+                    <div class="rf-title">Especificação técnica que identifica fornecedor único</div>
+                    <div class="rf-desc">Requisitos que só um fornecedor atende, mesmo sem citar a marca. Combinação
+                        improvável de atributos técnicos.</div>
+                    <div class="rf-tags"><span class="badge badge-red">Crítico</span><span
+                            class="badge badge-purple">Direcionamento</span></div>
+                </div>
+            </div>
+            <div class="rf-item">
+                <div class="rf-num">RF02</div>
+                <div class="rf-content">
+                    <div class="rf-title">Prazo de publicação no limite mínimo legal</div>
+                    <div class="rf-desc">Edital publicado com prazo exatamente igual ao mínimo — suficiente para o
+                        favorecido, insuficiente para novos concorrentes.</div>
+                    <div class="rf-tags"><span class="badge badge-amber">Alto risco</span><span
+                            class="badge badge-purple">Direcionamento</span></div>
+                </div>
+            </div>
+            <div class="rf-item">
+                <div class="rf-num">RF03</div>
+                <div class="rf-content">
+                    <div class="rf-title">Exigências de habilitação desproporcionais ao objeto</div>
+                    <div class="rf-desc">Capital social, tempo de mercado, atestados ou certificações que só o
+                        favorecido possui ou pode obter no prazo.</div>
+                    <div class="rf-tags"><span class="badge badge-red">Crítico</span><span
+                            class="badge badge-purple">Direcionamento</span></div>
+                </div>
+            </div>
+            <div class="rf-item">
+                <div class="rf-num">RF04</div>
+                <div class="rf-content">
+                    <div class="rf-title">Alta similaridade textual edital × proposta vencedora</div>
+                    <div class="rf-desc">Trechos do TR/edital aparecem quase idênticos na proposta — evidência de
+                        participação do vencedor na elaboração.</div>
+                    <div class="rf-tags"><span class="badge badge-red">Crítico</span><span
+                            class="badge badge-purple">Direcionamento</span><span class="badge badge-teal">NLP</span>
+                    </div>
+                    <div class="card-formula" style="margin-top:6px">cosine_sim(TF-IDF(edital), TF-IDF(proposta)) &gt;
+                        0.75</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-bottom:20px">
+        <div class="section-intro"
+            style="font-size:13px; margin-bottom:12px; font-style:normal; font-weight:600; color:#793904">Fase de
+            Competição</div>
+        <div class="rf-list">
+            <div class="rf-item">
+                <div class="rf-num">RF05</div>
+                <div class="rf-content">
+                    <div class="rf-title">Participante único habilitado de forma recorrente</div>
+                    <div class="rf-desc">Mesmo órgão, mesmo objeto, um único participante em múltiplos certames
+                        consecutivos.</div>
+                    <div class="rf-tags"><span class="badge badge-red">Crítico</span><span
+                            class="badge badge-purple">Direcionamento</span><span
+                            class="badge badge-teal">Conluio</span></div>
+                    <div class="card-formula" style="margin-top:6px">n_participantes_habilitados = 1 em &gt;50% dos
+                        certames do órgão/objeto</div>
+                </div>
+            </div>
+            <div class="rf-item">
+                <div class="rf-num">RF06</div>
+                <div class="rf-content">
+                    <div class="rf-title">Margem 1º/2º colocado sistematicamente menor que 2%</div>
+                    <div class="rf-desc">Lances do vencedor e segundo colocado consistentemente próximos — padrão de
+                        cobertura (cover bidding).</div>
+                    <div class="rf-tags"><span class="badge badge-red">Crítico</span><span
+                            class="badge badge-teal">Conluio</span></div>
+                </div>
+            </div>
+            <div class="rf-item">
+                <div class="rf-num">RF07</div>
+                <div class="rf-content">
+                    <div class="rf-title">Rodízio de vencedores entre empresas vinculadas</div>
+                    <div class="rf-desc">Empresas com vínculos ocultos alternam vitórias por lote, período ou órgão —
+                        simulando competição inexistente.</div>
+                    <div class="rf-tags"><span class="badge badge-red">Crítico</span><span
+                            class="badge badge-teal">Conluio</span></div>
+                </div>
+            </div>
+            <div class="rf-item">
+                <div class="rf-num">RF08</div>
+                <div class="rf-content">
+                    <div class="rf-title">Metadados idênticos em propostas de empresas distintas</div>
+                    <div class="rf-desc">PDFs de concorrentes com mesmo autor, mesma máquina ou diferença de minutos no
+                        timestamp de criação.</div>
+                    <div class="rf-tags"><span class="badge badge-red">Crítico</span><span
+                            class="badge badge-teal">Conluio</span></div>
+                    <div class="card-formula" style="margin-top:6px">|timestamp_A - timestamp_B| &lt; 60s OU autor_A ==
+                        autor_B</div>
+                </div>
+            </div>
+            <div class="rf-item">
+                <div class="rf-num">RF09</div>
+                <div class="rf-content">
+                    <div class="rf-title">Desvio da Lei de Benford nos valores de lance</div>
+                    <div class="rf-desc">Distribuição dos primeiros dígitos dos lances se afasta do padrão logarítmico
+                        natural — evidência de manipulação.</div>
+                    <div class="rf-tags"><span class="badge badge-amber">Alto risco</span><span
+                            class="badge badge-teal">Conluio</span></div>
+                    <div class="card-formula" style="margin-top:6px">P(d) = log₁₀(1+1/d) → teste χ² ou KS vs.
+                        distribuição observada</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-bottom:20px">
+        <div class="section-intro"
+            style="font-size:13px; margin-bottom:12px; font-style:normal; font-weight:600; color:#793904">Vínculos e
+            Associações</div>
+        <div class="rf-list">
+            <div class="rf-item">
+                <div class="rf-num">RF10</div>
+                <div class="rf-content">
+                    <div class="rf-title">CPF de servidor na QSA da empresa vencedora ou familiar</div>
+                    <div class="rf-desc">Agente público ou parente de 1º/2º grau como sócio, procurador ou representante
+                        do fornecedor contratado.</div>
+                    <div class="rf-tags"><span class="badge badge-red">Crítico</span><span
+                            class="badge badge-purple">Associação oculta</span></div>
+                    <div class="card-formula" style="margin-top:6px">CPF_servidor ∈ QSA_empresa OU CPF_familiar ∈
+                        QSA_empresa</div>
+                </div>
+            </div>
+            <div class="rf-item">
+                <div class="rf-num">RF11</div>
+                <div class="rf-content">
+                    <div class="rf-title">Porta giratória: ex-servidor entra na empresa contratada</div>
+                    <div class="rf-desc">Servidor exonerado passa a integrar empresa que foi por ele fiscalizada ou
+                        favorecida em menos de 12 meses.</div>
+                    <div class="rf-tags"><span class="badge badge-red">Crítico</span><span
+                            class="badge badge-purple">Associação oculta</span></div>
+                </div>
+            </div>
+            <div class="rf-item">
+                <div class="rf-num">RF12</div>
+                <div class="rf-content">
+                    <div class="rf-title">Múltiplos CNPJs no mesmo endereço / sócio laranja</div>
+                    <div class="rf-desc">Dezenas de empresas no mesmo endereço residencial; sócio com renda incompatível
+                        com o porte da empresa.</div>
+                    <div class="rf-tags"><span class="badge badge-red">Crítico</span><span
+                            class="badge badge-purple">Fachada</span></div>
+                </div>
+            </div>
+            <div class="rf-item">
+                <div class="rf-num">RF13</div>
+                <div class="rf-content">
+                    <div class="rf-title">CNPJ criado menos de 6 meses antes da licitação</div>
+                    <div class="rf-desc">Empresa sem histórico comercial, aberta especificamente para participar do
+                        certame e vencer contratos de grande valor.</div>
+                    <div class="rf-tags"><span class="badge badge-amber">Alto risco</span><span
+                            class="badge badge-purple">Fachada</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-bottom:20px">
+        <div class="section-intro"
+            style="font-size:13px; margin-bottom:12px; font-style:normal; font-weight:600; color:#793904">Fase de
+            Execução e Pagamento</div>
+        <div class="rf-list">
+            <div class="rf-item">
+                <div class="rf-num">RF14</div>
+                <div class="rf-content">
+                    <div class="rf-title">Valores concentrados abaixo do limite de dispensa (bunching)</div>
+                    <div class="rf-desc">Pico estatístico anômalo de contratos imediatamente abaixo de R$50k ou R$100k —
+                        fracionamento deliberado.</div>
+                    <div class="rf-tags"><span class="badge badge-red">Crítico</span><span
+                            class="badge badge-purple">Fracionamento</span></div>
+                </div>
+            </div>
+            <div class="rf-item">
+                <div class="rf-num">RF15</div>
+                <div class="rf-content">
+                    <div class="rf-title">Preço contratado acima de 10% da mediana de mercado</div>
+                    <div class="rf-desc">Desvio sistemático em relação ao Painel de Preços, SINAPI ou SICRO — indicativo
+                        de sobrepreço embutido.</div>
+                    <div class="rf-tags"><span class="badge badge-red">Crítico</span><span
+                            class="badge badge-purple">Sobrepreço</span></div>
+                </div>
+            </div>
+            <div class="rf-item">
+                <div class="rf-num">RF16</div>
+                <div class="rf-content">
+                    <div class="rf-title">Aditivos contratuais frequentes acima de 25%</div>
+                    <div class="rf-desc">Contratos que iniciam com valor baixo e crescem via aditivos — estratégia de
+                        vencer com preço baixo e lucrar na execução.</div>
+                    <div class="rf-tags"><span class="badge badge-amber">Alto risco</span><span
+                            class="badge badge-purple">Superfaturamento</span></div>
+                </div>
+            </div>
+            <div class="rf-item">
+                <div class="rf-num">RF17</div>
+                <div class="rf-content">
+                    <div class="rf-title">Empresa sem funcionários executando contratos &gt; R$500k</div>
+                    <div class="rf-desc">Zero vínculos no eSocial para empresa com contratos ativos de centenas de
+                        milhares de reais — impossibilidade operacional.</div>
+                    <div class="rf-tags"><span class="badge badge-red">Crítico</span><span
+                            class="badge badge-purple">Fachada</span></div>
+                </div>
+            </div>
+            <div class="rf-item">
+                <div class="rf-num">RF18</div>
+                <div class="rf-content">
+                    <div class="rf-title">Receita &gt;90% proveniente de único órgão público</div>
+                    <div class="rf-desc">Empresa criada para capturar recursos de um órgão específico — sem carteira de
+                        clientes privados ou diversificação.</div>
+                    <div class="rf-tags"><span class="badge badge-amber">Alto risco</span><span
+                            class="badge badge-purple">Fachada</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MATRIX -->
+    <div style="margin-top:28px">
+        <div class="section-intro"
+            style="font-size:13px; margin-bottom:14px; font-style:normal; font-weight:600; color:#793904">Matriz:
+            Severidade × Detectabilidade Automatizada</div>
+        <div class="matrix-wrap">
+            <table class="matrix-table">
+                <tr>
+                    <th style="width:100px"></th>
+                    <th>Baixa detectabilidade</th>
+                    <th>Média detectabilidade</th>
+                    <th>Alta detectabilidade</th>
+                </tr>
+                <tr>
+                    <td class="row-head">Alta severidade</td>
+                    <td class="matrix-cell mc-red">Emergência fabricada · Porta giratória · Serviço fantasma</td>
+                    <td class="matrix-cell mc-red">Metadados PDF idênticos (RF08) · Sobrepreço (RF15) · Sócio servidor
+                        (RF10)</td>
+                    <td class="matrix-cell mc-red">Sem funcionários (RF17) · Bunching (RF14) · Participante único (RF05)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="row-head">Média severidade</td>
+                    <td class="matrix-cell mc-amber">Subcontratação vinculada · Fiscal sem qualificação · Pagamento
+                        antecipado</td>
+                    <td class="matrix-cell mc-amber">Aditivos &gt;25% (RF16) · Rodízio vencedores (RF07) · Porta
+                        giratória (RF11)</td>
+                    <td class="matrix-cell mc-amber">Lei de Benford (RF09) · CV baixo de lances · HHI dispensas</td>
+                </tr>
+                <tr>
+                    <td class="row-head">Baixa severidade</td>
+                    <td class="matrix-cell mc-teal">Impugnações negadas · Comissão com vínculo · Recursos seletivos</td>
+                    <td class="matrix-cell mc-teal">Prazo mínimo publicação (RF02) · Sazonalidade artificial · Recursos
+                    </td>
+                    <td class="matrix-cell mc-teal">CNPJ recém-criado (RF13) · Múltiplos CNPJs endereço (RF12) ·
+                        Dispensa em série</td>
+                </tr>
+            </table>
+        </div>
+        <p style="font-size:11px; color:var(--text3); margin-top:8px; font-family:var(--mono)">Prioridade de automação:
+            quadrante superior direito (alta severidade + alta detectabilidade automática)</p>
+    </div>
+</section>

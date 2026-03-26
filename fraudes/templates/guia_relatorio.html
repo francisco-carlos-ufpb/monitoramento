@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Relatório Consolidado de Fraudes | Licitai Insight{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/guia.css' %}">
+<style>
+    .report-wrapper {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        padding: 4rem;
+        box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08);
+        border-radius: 20px;
+        position: relative;
+    }
+
+    /* Force all sections to be visible for the report */
+    .section-guide,
+    .section {
+        display: block !important;
+        opacity: 1 !important;
+        transform: none !important;
+        margin-bottom: 5rem;
+        border-bottom: 1px solid #edf2f7;
+        padding-bottom: 4rem;
+    }
+
+    .section:last-child {
+        border-bottom: none;
+    }
+
+    /* Force all accordions to stay open */
+    .acc-body {
+        display: block !important;
+        padding: 1.5rem;
+        background: rgba(248, 250, 252, 0.5);
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .acc-trigger {
+        pointer-events: none;
+        background: #f1f5f9 !important;
+        border-bottom: none !important;
+    }
+
+    .acc-arrow {
+        display: none;
+    }
+
+    .report-header-badge {
+        background: rgba(56, 189, 248, 0.1);
+        color: #0284c7;
+        font-weight: 600;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+    }
+
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+
+        body {
+            background: white !important;
+            padding: 0 !important;
+        }
+
+        .container {
+            width: 100% !important;
+            max-width: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .report-wrapper {
+            box-shadow: none;
+            padding: 0;
+            width: 100%;
+            max-width: none;
+            border-radius: 0;
+        }
+
+        .section {
+            page-break-inside: avoid;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+        }
+
+        .guide-main-content {
+            border: none !important;
+            padding: 0 !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Controls -->
+    <div class="no-print d-flex justify-content-between align-items-center mb-5">
+        <a href="{% url 'fraude_guia' %}" class="btn btn-outline-primary rounded-pill px-4">
+            <i class="bi bi-arrow-left me-2"></i>Voltar ao Painel
+        </a>
+        <div class="d-flex gap-2">
+            <button onclick="window.print()" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                <i class="bi bi-file-earmark-pdf me-2"></i>Gerar PDF / Imprimir
+            </button>
+        </div>
+    </div>
+
+    <div class="report-wrapper">
+        <!-- Report Watermark/Header -->
+        <div class="text-center mb-5 pb-5 border-bottom">
+            <div class="mb-4">
+                <i class="bi bi-shield-check-fill text-primary" style="font-size: 3rem;"></i>
+            </div>
+            <span class="badge report-header-badge px-3 py-2 rounded-pill mb-3 text-uppercase">Relatório de Conformidade
+                e Integridade</span>
+            <h1 class="display-4 fw-bold text-primary mb-3">Mapa Geral de Fraudes</h1>
+            <p class="lead text-muted mx-auto" style="max-width: 600px;">Consolidado metodológico para detecção de
+                irregularidades e padrões suspeitos em processos de licitação pública.</p>
+            <p class="lead text-muted mx-auto" style="max-width: 600px;">Orientador: Prof. Dr. Lucídio dos Anjos Formiga
+                Cabral</p>
+            <p class="lead text-muted mx-auto" style="max-width: 600px;">Orientando: Francisco Carlos de Lima Pereira
+            </p>
+
+            <div class="d-flex justify-content-center gap-4 mt-4 text-muted small">
+                <div><i class="bi bi-calendar3 me-2"></i><strong>Data:</strong> {% now "d/m/Y" %}</div>
+                <div><i class="bi bi-patch-check me-2"></i><strong>Versão:</strong> 2.1 Final</div>
+            </div>
+        </div>
+
+        <!-- Inject All Sections -->
+        <div class="report-content">
+            {% include 'partials/guia_sections.html' %}
+        </div>
+
+        <!-- Report Footer -->
+        <footer class="mt-5 pt-5 text-center border-top">
+            <div class="mb-3">
+                <i class="bi bi-shield-check-fill text-info h4"></i>
+                <span class="h5 fw-bold ms-2">Licitai<span class="text-primary">Insight</span></span>
+            </div>
+            <p class="text-muted small mb-0">Este documento é um guia metodológico e deve ser utilizado como suporte à
+                auditoria e controle.</p>
+            <p class="text-muted small">© 2026 Projeto de Pesquisa UFPB · Licitai Insight Platform</p>
+        </footer>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // In report mode, we want everything visible, so no need for toggle JS
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log("Report View Loaded: All sections and accordions visible by CSS override.");
+    });
+</script>
+{% endblock %}

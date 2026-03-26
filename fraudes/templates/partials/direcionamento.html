@@ -1,0 +1,99 @@
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 04: DIRECIONAMENTO DE EDITAL -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="direcionamento">
+    <div class="section-header">
+        <span class="section-num">04</span>
+        <h2 class="section-title">Direcionamento de Edital</h2>
+    </div>
+    <p class="section-intro">A fraude acontece antes da licitação, no momento da redação do edital. É o mecanismo mais
+        sofisticado — cada requisito parece legítimo isoladamente, mas o conjunto elimina toda concorrência.</p>
+
+    <div class="accordion">
+        <div class="acc-item open">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>Especificações Restritivas</span><span class="acc-arrow">›</span>
+            </button>
+            <div class="acc-body">
+                <div class="card-grid" style="gap:10px">
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Marca ou modelo específico
+                                disfarçado</span><span class="badge badge-red">Crítico</span></div>
+                        <div class="card-body">Características técnicas que correspondem exatamente a um único
+                            fornecedor sem citar a marca. Buscar especificações em catálogos — match único é sinal
+                            crítico.</div>
+                        <div class="card-formula">match(especificações_edital, catálogos_fabricantes) = único fornecedor
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Combinação improvável de
+                                requisitos</span><span class="badge badge-red">Crítico</span></div>
+                        <div class="card-body">Requisitos individualmente razoáveis, mas combinados eliminam todos
+                            exceto um fornecedor. Cada cláusula parece legítima; juntas, há apenas uma empresa elegível.
+                        </div>
+                        <div class="card-formula">n_empresas_elegíveis(req₁ ∧ req₂ ∧ ... ∧ reqₙ) → suspeito se = 1</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="acc-item">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>Habilitação Excessiva</span><span class="acc-arrow">›</span>
+            </button>
+            <div class="acc-body">
+                <div class="card-grid" style="gap:10px">
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Capital social desproporcional</span><span
+                                class="badge badge-amber">Alto risco</span></div>
+                        <div class="card-body">Capital social mínimo exigido muito acima do valor contratual. A Lei
+                            14.133/2021 limita a 10% — verificar cumprimento.</div>
+                        <div class="card-formula">capital_exigido / valor_contrato → legal se ≤ 0.10; suspeito se &gt;
+                            0.30</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Atestado de capacidade
+                                irreproduzível</span><span class="badge badge-red">Crítico</span></div>
+                        <div class="card-body">Exige atestado de execução de objeto idêntico que na prática só o
+                            fornecedor anterior poderia apresentar. TCU tem jurisprudência consolidada contra isso.
+                        </div>
+                        <div class="card-formula">% termos do objeto no atestado exigido &gt; 85% = suspeito (Acórdão
+                            TCU 2.800/2012)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="acc-item">
+            <button class="acc-trigger" onclick="toggleAcc(this)">
+                <span>Análise Textual (NLP)</span><span class="acc-arrow">›</span>
+            </button>
+            <div class="acc-body">
+                <div class="card-grid" style="gap:10px">
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Similaridade edital × proposta
+                                vencedora</span><span class="badge badge-red">Crítico</span></div>
+                        <div class="card-body">Trechos do edital aparecem quase idênticos na proposta vencedora —
+                            evidência de que a empresa participou da redação. Aplicar TF-IDF + similaridade de cosseno.
+                        </div>
+                        <div class="card-formula">cosine_similarity(TF-IDF(edital), TF-IDF(proposta)) &gt; 0.75</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Termos técnicos proprietários</span><span
+                                class="badge badge-teal">NLP</span></div>
+                        <div class="card-body">Identificar no texto do edital termos que são marcas registradas ou
+                            jargões exclusivos de um fornecedor. Construir dicionário de termos proprietários por setor.
+                        </div>
+                        <div class="card-formula">NER + dicionário_termos_proprietários (INPI) → freq. de hits por
+                            edital</div>
+                    </div>
+                </div>
+                <div class="highlight-box" style="margin-top:12px">
+                    <div class="highlight-box-title">Oportunidade de pesquisa original</div>
+                    <div class="highlight-box-body">Usar BERTimbau (BERT em português) para classificar cláusulas
+                        restritivas ou detectar termos proprietários em escala no corpus do PNCP seria uma contribuição
+                        metodológica relevante — a maioria dos trabalhos existentes analisa apenas variáveis numéricas,
+                        não o texto do edital.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

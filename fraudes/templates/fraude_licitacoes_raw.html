@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fraudes em Licitações Públicas — Guia de Pesquisa</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0f0d;
+  --bg2: #151610;
+  --bg3: #1c1e18;
+  --bg4: #232519;
+  --border: rgba(180,190,120,0.13);
+  --border2: rgba(180,190,120,0.22);
+  --accent: #c8d44a;
+  --accent2: #a8b832;
+  --accent3: #e8f060;
+  --red: #e85555;
+  --red-bg: rgba(232,85,85,0.1);
+  --red-border: rgba(232,85,85,0.25);
+  --amber: #e8a835;
+  --amber-bg: rgba(232,168,53,0.1);
+  --amber-border: rgba(232,168,53,0.25);
+  --teal: #3dc4a0;
+  --teal-bg: rgba(61,196,160,0.1);
+  --teal-border: rgba(61,196,160,0.25);
+  --purple: #9b7fe8;
+  --purple-bg: rgba(155,127,232,0.1);
+  --purple-border: rgba(155,127,232,0.25);
+  --text: #d8dcc8;
+  --text2: #9aa08a;
+  --text3: #606858;
+  --mono: 'IBM Plex Mono', monospace;
+  --serif: 'Source Serif 4', Georgia, serif;
+  --display: 'Playfair Display', serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* NOISE TEXTURE */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* LAYOUT */
+.wrapper { max-width: 960px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+/* HEADER */
+.site-header {
+  border-bottom: 1px solid var(--border2);
+  padding: 60px 0 48px;
+  margin-bottom: 0;
+  background: linear-gradient(180deg, rgba(200,212,74,0.04) 0%, transparent 100%);
+}
+
+.header-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .12em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.header-eyebrow::after { content: ''; flex: 0 0 48px; height: 1px; background: var(--accent2); opacity: .5; }
+
+.site-title {
+  font-family: var(--display);
+  font-size: clamp(32px, 5vw, 54px);
+  font-weight: 700;
+  line-height: 1.1;
+  color: #eef0e0;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+.site-title em { color: var(--accent); font-style: normal; }
+
+.site-subtitle {
+  font-size: 18px;
+  color: var(--text2);
+  max-width: 600px;
+  font-weight: 300;
+  font-style: italic;
+  margin-bottom: 32px;
+}
+
+.header-meta {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.meta-item {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.meta-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); opacity: .6; }
+
+/* NAV */
+/*
+.toc-nav {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 0;
+}
+*/
+
+.toc-nav {
+  background: var(--bg2, #ffffff);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border, rgba(0,0,0,0.1));
+  box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 1rem 1rem;
+  overflow: hidden;
+}
+
+.toc-inner {
+  display: flex;
+  flex-wrap: wrap;        /* ← DUAS LINHAS */
+  gap: 0.75rem;
+  padding: 0.25rem 0;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.toc-link {
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 0.5rem 1rem;
+  color: var(--text-muted, #666);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  flex: 1 1 calc(50% - 0.375rem);  /* ← 2 por linha */
+  text-align: center;
+  min-width: 0;
+}
+
+.toc-link:hover {
+  background: var(--bg-hover, rgba(0,0,0,0.05));
+  color: var(--text, #000);
+  transform: translateY(-1px);
+}
+
+.toc-link.active {
+  background: var(--primary, #007bff);
+  color: white;
+  border-color: var(--primary, #007bff);
+}
+
+/* Desktop: 4 por linha */
+@media (min-width: 768px) {
+  .toc-link {
+    flex: 1 1 calc(25% - 0.5625rem);
+  }
+  
+  .toc-nav {
+    padding: 1rem 2rem;
+  }
+}
+
+
+.toc-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.toc-inner::-webkit-scrollbar { display: none; }
+.toc-link {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .05em;
+  color: var(--text3);
+  text-decoration: none;
+  padding: 14px 16px;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color .2s, border-color .2s;
+}
+.toc-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* MAIN */
+main { padding: 64px 0 80px; }
+
+/* SECTIONS */
+.section {
+  margin-bottom: 72px;
+  scroll-margin-top: 60px;
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  background: rgba(200,212,74,0.08);
+  border: 1px solid rgba(200,212,74,0.2);
+  padding: 4px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+  margin-top: 6px;
+}
+
+.section-title {
+  font-family: var(--display);
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 600;
+  color: #eef0e0;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.section-intro {
+  font-size: 15px;
+  color: var(--text2);
+  margin-bottom: 28px;
+  max-width: 720px;
+  line-height: 1.75;
+  font-style: italic;
+}
+
+/* CARDS */
+.card-grid { display: grid; gap: 12px; }
+.card-grid-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.card-grid-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px 20px;
+  transition: border-color .2s;
+}
+.card:hover { border-color: var(--border2); }
+
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
+.card-title { font-size: 14px; font-weight: 600; color: #eef0e0; line-height: 1.35; font-family: var(--serif); }
+.card-body { font-size: 13px; color: var(--text2); line-height: 1.6; }
+.card-formula {
+  font-family: var(--mono);
+  font-size: 11px;
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 7px 10px;
+  margin-top: 10px;
+  color: var(--accent2);
+  line-height: 1.5;
+  word-break: break-all;
+}
+.card-fonte { font-size: 11px; color: var(--text3); margin-top: 8px; font-family: var(--mono); }
+
+/* BADGES */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-family: var(--mono);
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+  letter-spacing: .04em;
+  flex-shrink: 0;
+}
+.badge-red { background: var(--red-bg); border: 1px solid var(--red-border); color: var(--red); }
+.badge-amber { background: var(--amber-bg); border: 1px solid var(--amber-border); color: var(--amber); }
+.badge-teal { background: var(--teal-bg); border: 1px solid var(--teal-border); color: var(--teal); }
+.badge-purple { background: var(--purple-bg); border: 1px solid var(--purple-border); color: var(--purple); }
+.badge-green { background: rgba(200,212,74,0.08); border: 1px solid rgba(200,212,74,0.2); color: var(--accent); }
+
+/* RF LIST */
+.rf-list { display: grid; gap: 10px; }
+.rf-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 18px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.rf-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  min-width: 32px;
+  padding-top: 2px;
+}
+.rf-content { flex: 1; }
+.rf-title { font-size: 13px; font-weight: 600; color: #eef0e0; margin-bottom: 4px; font-family: var(--serif); }
+.rf-desc { font-size: 12px; color: var(--text2); line-height: 1.55; }
+.rf-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+
+/* PHASE GRID */
+.phase-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.phase-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 18px;
+}
+.phase-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.phase-list { list-style: none; }
+.phase-list li {
+  font-size: 12px;
+  color: var(--text2);
+  padding: 4px 0;
+  padding-left: 14px;
+  position: relative;
+  line-height: 1.5;
+}
+.phase-list li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--text3);
+  font-size: 10px;
+}
+
+/* COMPARE */
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.compare-card {
+  border-radius: 8px;
+  padding: 18px 20px;
+  border: 1px solid;
+}
+.compare-red { background: var(--red-bg); border-color: var(--red-border); }
+.compare-amber { background: var(--amber-bg); border-color: var(--amber-border); }
+.compare-title { font-size: 15px; font-weight: 600; margin-bottom: 10px; font-family: var(--display); }
+.compare-red .compare-title { color: var(--red); }
+.compare-amber .compare-title { color: var(--amber); }
+.compare-body { font-size: 12px; color: var(--text2); line-height: 1.65; }
+
+/* MATRIX */
+.matrix-wrap { overflow-x: auto; }
+.matrix-table { border-collapse: collapse; width: 100%; min-width: 560px; }
+.matrix-table th {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .05em;
+  color: var(--text3);
+  padding: 10px 14px;
+  text-align: center;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+}
+.matrix-table .row-head {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  text-align: right;
+  white-space: nowrap;
+}
+.matrix-cell {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  line-height: 1.5;
+  vertical-align: top;
+}
+.mc-red { background: var(--red-bg); color: #f0a0a0; }
+.mc-amber { background: var(--amber-bg); color: #f0c888; }
+.mc-teal { background: var(--teal-bg); color: #80d8c0; }
+
+/* SOURCES */
+.source-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.source-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.source-title { font-family: var(--mono); font-size: 11px; color: var(--accent); margin-bottom: 8px; letter-spacing: .05em; }
+.source-list { list-style: none; }
+.source-list li { font-size: 12px; color: var(--text2); padding: 3px 0; padding-left: 12px; position: relative; }
+.source-list li::before { content: '›'; position: absolute; left: 0; color: var(--text3); }
+
+/* METHODOLOGY */
+.method-steps { counter-reset: step; display: grid; gap: 10px; }
+.method-step {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 18px 14px 56px;
+  position: relative;
+  counter-increment: step;
+}
+.method-step::before {
+  content: counter(step);
+  position: absolute;
+  left: 18px;
+  top: 14px;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+  width: 24px;
+  height: 24px;
+  background: rgba(200,212,74,0.1);
+  border: 1px solid rgba(200,212,74,0.2);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.method-step-title { font-size: 13px; font-weight: 600; color: #eef0e0; margin-bottom: 4px; }
+.method-step-body { font-size: 12px; color: var(--text2); line-height: 1.55; }
+
+/* ACCORDION */
+.accordion { display: grid; gap: 8px; }
+.acc-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.acc-trigger {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  color: #eef0e0;
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  gap: 12px;
+}
+.acc-trigger:hover { background: var(--bg3); }
+.acc-arrow {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--accent);
+  transition: transform .25s;
+  flex-shrink: 0;
+}
+.acc-item.open .acc-arrow { transform: rotate(90deg); }
+.acc-body { display: none; padding: 0 18px 16px; }
+.acc-item.open .acc-body { display: block; }
+
+/* FORMULA BLOCK */
+.formula-block {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: var(--bg4);
+  border: 1px solid var(--border2);
+  border-left: 3px solid var(--accent2);
+  border-radius: 0 6px 6px 0;
+  padding: 12px 16px;
+  margin: 12px 0;
+  color: var(--accent2);
+  line-height: 1.6;
+}
+
+/* HIGHLIGHT BOX */
+.highlight-box {
+  background: rgba(200,212,74,0.06);
+  border: 1px solid rgba(200,212,74,0.18);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 20px 0;
+}
+.highlight-box-title { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+.highlight-box-body { font-size: 13px; color: var(--text); line-height: 1.65; }
+
+/* LIMIT CARDS */
+.limit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 20px; }
+.limit-card {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 14px 16px;
+  text-align: center;
+}
+.limit-val { font-family: var(--display); font-size: 22px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+.limit-lbl { font-size: 12px; color: var(--text2); line-height: 1.4; }
+
+/* DIVIDER */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 48px 0;
+}
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 0;
+  margin-top: 0;
+}
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer-text { font-size: 12px; color: var(--text3); font-family: var(--mono); }
+.footer-accent { color: var(--accent2); }
+
+/* SCROLL INDICATOR */
+.scroll-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--accent);
+  z-index: 200;
+  opacity: 0;
+  transition: opacity .3s;
+  text-decoration: none;
+}
+.scroll-top.visible { opacity: 1; }
+
+/* RESPONSIVE */
+@media (max-width: 640px) {
+  .wrapper { padding: 0 18px; }
+  .compare-grid { grid-template-columns: 1fr; }
+  .toc-link { padding: 12px 12px; font-size: 10px; }
+  .section-header { flex-direction: column; gap: 8px; }
+}
+
+/* PRINT */
+@media print {
+  .toc-nav, .scroll-top { display: none; }
+  body { background: white; color: #111; }
+  .site-header { background: none; }
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.section { animation: fadeUp .5s ease both; }
+.section:nth-child(2) { animation-delay: .05s; }
+.section:nth-child(3) { animation-delay: .1s; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="wrapper">
+    <div class="header-eyebrow">Doutorado em andamento · Integridade pública</div>
+    <h1 class="site-title">Fraudes em <em>Licitações</em><br>Públicas</h1>
+    <p class="site-subtitle">Guia metodológico para identificação de padrões, variáveis e técnicas de detecção</p>
+    <div class="header-meta">
+      <span class="meta-item"><span class="meta-dot"></span>8 mecanismos de fraude</span>
+      <span class="meta-item"><span class="meta-dot"></span>18 red flags catalogados</span>
+      <span class="meta-item"><span class="meta-dot"></span>Fontes de dados abertas</span>
+      <span class="meta-item"><span class="meta-dot"></span>Técnicas estatísticas e NLP</span>
+    </div>
+  </div>
+</header>
+
+<!-- NAVIGATION -->
+<nav class="toc-nav">
+  <div class="toc-inner">
+    <a href="#mapa" class="toc-link">01 · Mapa Geral</a>
+    <a href="#conluio" class="toc-link">02 · Conluio</a>
+    <a href="#associacoes" class="toc-link">03 · Associações Ocultas</a>
+    <a href="#direcionamento" class="toc-link">04 · Direcionamento</a>
+    <a href="#fachada" class="toc-link">05 · Empresas de Fachada</a>
+    <a href="#sobreprecio" class="toc-link">06 · Sobrepreço</a>
+    <a href="#fracionamento" class="toc-link">07 · Fracionamento</a>
+    <a href="#dispensa" class="toc-link">08 · Dispensa Indevida</a>
+    <a href="#redflags" class="toc-link">09 · Red Flags</a>
+    <a href="#metodologia" class="toc-link">10 · Metodologia</a>
+  </div>
+</nav>
+
+<main>
+<div class="wrapper">
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 01: MAPA GERAL -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="mapa">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Mapa Geral dos Mecanismos de Fraude</h2>
+  </div>
+  <p class="section-intro">Os processos licitatórios e contratos públicos estão sujeitos a oito mecanismos centrais de fraude, que podem ocorrer isoladamente ou de forma combinada e sistêmica.</p>
+
+  <div class="card-grid card-grid-2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Conluio</span><span class="badge badge-red">Crítico</span></div>
+      <div class="card-body">Acordo entre licitantes concorrentes para eliminar a competição real. Inclui cover bidding, rodízio de vencedores e desistências estratégicas.</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Associações Ocultas</span><span class="badge badge-red">Crítico</span></div>
+      <div class="card-body">Vínculos não declarados entre agentes públicos e fornecedores. CPFs em comum, porta giratória, pessoas interpostas (laranjas).</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Direcionamento de Edital</span><span class="badge badge-red">Crítico</span></div>
+      <div class="card-body">Especificações técnicas que identificam um único fornecedor, exigências de habilitação desproporcionais, prazo mínimo de publicação.</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Empresas de Fachada</span><span class="badge badge-red">Crítico</span></div>
+      <div class="card-body">Shell companies sem substância econômica real: CNPJ recém-criado, endereço inexistente, ausência de funcionários, receita 100% pública.</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Sobrepreço</span><span class="badge badge-amber">Alto risco</span></div>
+      <div class="card-body">Preço unitário contratado acima do valor de mercado. Detectável via Painel de Preços, SINAPI, SICRO e análise de BDI.</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Superfaturamento</span><span class="badge badge-amber">Alto risco</span></div>
+      <div class="card-body">Cobrança por quantidade, qualidade ou especificação diferente do entregue. Ocorre na execução — medições, NF-e, laudos técnicos.</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Fracionamento Ilícito</span><span class="badge badge-amber">Alto risco</span></div>
+      <div class="card-body">Divisão do objeto para enquadrar nas faixas de dispensa. Detecção via bunching estatístico e agrupamento por similaridade de objeto (NLP).</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Dispensa Indevida</span><span class="badge badge-amber">Alto risco</span></div>
+      <div class="card-body">Uso abusivo das hipóteses de dispensa e inexigibilidade: emergência fabricada, inexigibilidade por notória especialização, fornecedor exclusivo fictício.</div>
+    </div>
+  </div>
+
+  <div class="highlight-box" style="margin-top:24px">
+    <div class="highlight-box-title">Correlações sistêmicas</div>
+    <div class="highlight-box-body">Na fraude sofisticada, os mecanismos coexistem: o direcionamento garante que o conluio funcione; as empresas de fachada ocultam as associações ocultas; o fracionamento viabiliza a dispensa; e o sobrepreço maximiza o dano durante a execução.</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 02: CONLUIO -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="conluio">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Conluio entre Licitantes</h2>
+  </div>
+  <p class="section-intro">Acordo entre empresas concorrentes para eliminar a competição real. É um dos padrões mais difíceis de provar, mas também um dos mais ricos em sinais estatísticos.</p>
+
+  <div class="accordion">
+    <div class="acc-item open">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span>Comportamento de Lances</span><span class="acc-arrow">›</span>
+      </button>
+      <div class="acc-body">
+        <div class="card-grid" style="gap:10px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Cobertura de lance (cover bidding)</span><span class="badge badge-red">Crítico</span></div>
+            <div class="card-body">Empresa B apresenta lance propositalmente mais alto que A para simular competição. Variáveis: margem entre 1º e 2º colocado, frequência do mesmo par vencedor/perdedor em múltiplos certames.</div>
+            <div class="card-formula">desvio = (lance_2 - lance_1) / lance_1 → suspeito se sistematicamente &lt; 5%</div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Rodízio de vencedores</span><span class="badge badge-red">Crítico</span></div>
+            <div class="card-body">Empresas do mesmo grupo alternam vitórias por lote ou por período. Sinal: correlação negativa entre vitórias de A e vitórias de B no mesmo órgão ao longo do tempo.</div>
+            <div class="card-formula">win_rate(A) × win_rate(B) por órgão/período → padrão alternado</div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Desistências estratégicas</span><span class="badge badge-amber">Médio risco</span></div>
+            <div class="card-body">Empresa entra no processo e retira proposta pouco antes do fechamento. Verificar taxa de retirada, momento da desistência e cruzamento com certames futuros.</div>
+            <div class="card-formula">tempo_desistencia / tempo_total_certame → suspeito se &gt; 0.8</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span>Vínculos entre Empresas</span><span class="acc-arrow">›</span>
+      </button>
+      <div class="acc-body">
+        <div class="card-grid" style="gap:10px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Metadados idênticos em propostas</span><span class="badge badge-red">Crítico</span></div>
+            <div class="card-body">Propostas de empresas diferentes geradas pelo mesmo usuário, mesma máquina ou com diferença de minutos. Extrair metadados de PDFs (autor, criador, timestamp).</div>
+            <div class="card-formula">|timestamp_A - timestamp_B| &lt; 60s → suspeito; autor_A == autor_B → crítico</div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Rede de relacionamento (grafo)</span><span class="badge badge-teal">Avançado</span></div>
+            <div class="card-body">Modelar empresas, sócios, agentes públicos e contratos como nós de um grafo. Detectar comunidades via Louvain ou Girvan-Newman. Ferramentas: NetworkX, Neo4j.</div>
+            <div class="card-formula">betweenness_centrality, modularidade Q &gt; 0.3 = comunidade significativa</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span>Análise Estatística</span><span class="acc-arrow">›</span>
+      </button>
+      <div class="acc-body">
+        <div class="card-grid" style="gap:10px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Lei de Benford</span><span class="badge badge-teal">Avançado</span></div>
+            <div class="card-body">Distribuição dos primeiros dígitos dos valores de lance deve seguir padrão logarítmico natural. Desvio significativo indica manipulação.</div>
+            <div class="card-formula">P(d) = log₁₀(1 + 1/d) → teste χ² ou KS contra distribuição observada</div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Coeficiente de variação de propostas</span><span class="badge badge-amber">Médio risco</span></div>
+            <div class="card-body">Em mercados competitivos, propostas variam significativamente. Baixo CV entre concorrentes em múltiplos certames indica coordenação de preços.</div>
+            <div class="card-formula">CV = σ(lances) / μ(lances) → suspeito se CV &lt; 0.02 sistematicamente</div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Detecção de anomalia (ML)</span><span class="badge badge-teal">Avançado</span></div>
+            <div class="card-body">Isolation Forest, DBSCAN ou Autoencoder para identificar certames fora do padrão multivariado. Features: n_participantes, spread_lances, taxa_desistência, tempo_resposta.</div>
+            <div class="card-formula">Isolation Forest: anomaly_score → threshold via percentil 95 do conjunto</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 03: ASSOCIAÇÕES OCULTAS -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="associacoes">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Associações Ocultas</h2>
+  </div>
+  <p class="section-intro">Vínculos não declarados entre agentes públicos e fornecedores. É o núcleo onde corrupção e conluio se encontram. A análise de grafos heterogêneos é a técnica mais robusta para detecção.</p>
+
+  <div class="card-grid card-grid-2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Sócio ou familiar como representante</span><span class="badge badge-red">Crítico</span></div>
+      <div class="card-body">CPF do servidor aparece como sócio, administrador ou procurador da empresa vencedora — ou parente de 1º/2º grau ocupa essa posição.</div>
+      <div class="card-formula">CPF_servidor ∈ QSA_empresa OU CPF_familiar ∈ QSA_empresa</div>
+      <div class="card-fonte">Fontes: CNPJ/Receita · SIAPE · Portal da Transparência</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Porta giratória (revolving door)</span><span class="badge badge-red">Crítico</span></div>
+      <div class="card-body">Ex-servidor passa a integrar empresa que foi por ele fiscalizada ou favorecida. Cruzar data de exoneração com data de entrada na QSA e histórico de contratos supervisionados.</div>
+      <div class="card-formula">dt_entrada_QSA - dt_exoneração &lt; 12 meses + contratos_supervisionados &gt; 0</div>
+      <div class="card-fonte">Fontes: SIAPE · CNPJ/Receita · PNCP · Diário Oficial</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Pessoa interposta (laranja)</span><span class="badge badge-red">Crítico</span></div>
+      <div class="card-body">Terceiro sem perfil empresarial aparece como sócio nominal, ocultando o real beneficiário. Detectar por inconsistência entre renda declarada e participação societária.</div>
+      <div class="card-formula">renda_sócio &lt;&lt; porte_empresa OU sócio com QSAs em setores distintos</div>
+      <div class="card-fonte">Fontes: CNPJ/Receita · DIRPF · TSE (doações eleitorais)</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Doações eleitorais cruzadas</span><span class="badge badge-purple">Complementar</span></div>
+      <div class="card-body">Empresa contratada ou seus sócios fizeram doações ao político que nomeia o gestor responsável pela licitação. Correlacionar com volume de contratos recebidos.</div>
+      <div class="card-formula">doação_TSE(sócio → político) × contratos_recebidos → correlação temporal</div>
+      <div class="card-fonte">Fontes: TSE (CAND/RECEITA) · PNCP · Diário Oficial</div>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <div class="highlight-box-title">Análise de Grafo — Estratégia Recomendada</div>
+    <div class="highlight-box-body">Criar grafo bipartido com dois tipos de nós: pessoas (CPF) e entidades (CNPJ, órgão, contrato). Arestas representam relações (sócio-de, fiscalizou, assinou, subcontratou). Um caminho de comprimento ≤ 2 entre servidor e empresa é sinal forte de associação oculta. Algoritmo Louvain para detecção de comunidades (Q &gt; 0.3). Ferramentas: NetworkX (Python), Neo4j, Gephi.</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 04: DIRECIONAMENTO DE EDITAL -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="direcionamento">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Direcionamento de Edital</h2>
+  </div>
+  <p class="section-intro">A fraude acontece antes da licitação, no momento da redação do edital. É o mecanismo mais sofisticado — cada requisito parece legítimo isoladamente, mas o conjunto elimina toda concorrência.</p>
+
+  <div class="accordion">
+    <div class="acc-item open">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span>Especificações Restritivas</span><span class="acc-arrow">›</span>
+      </button>
+      <div class="acc-body">
+        <div class="card-grid" style="gap:10px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Marca ou modelo específico disfarçado</span><span class="badge badge-red">Crítico</span></div>
+            <div class="card-body">Características técnicas que correspondem exatamente a um único fornecedor sem citar a marca. Buscar especificações em catálogos — match único é sinal crítico.</div>
+            <div class="card-formula">match(especificações_edital, catálogos_fabricantes) = único fornecedor</div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Combinação improvável de requisitos</span><span class="badge badge-red">Crítico</span></div>
+            <div class="card-body">Requisitos individualmente razoáveis, mas combinados eliminam todos exceto um fornecedor. Cada cláusula parece legítima; juntas, há apenas uma empresa elegível.</div>
+            <div class="card-formula">n_empresas_elegíveis(req₁ ∧ req₂ ∧ ... ∧ reqₙ) → suspeito se = 1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span>Habilitação Excessiva</span><span class="acc-arrow">›</span>
+      </button>
+      <div class="acc-body">
+        <div class="card-grid" style="gap:10px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Capital social desproporcional</span><span class="badge badge-amber">Alto risco</span></div>
+            <div class="card-body">Capital social mínimo exigido muito acima do valor contratual. A Lei 14.133/2021 limita a 10% — verificar cumprimento.</div>
+            <div class="card-formula">capital_exigido / valor_contrato → legal se ≤ 0.10; suspeito se &gt; 0.30</div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Atestado de capacidade irreproduzível</span><span class="badge badge-red">Crítico</span></div>
+            <div class="card-body">Exige atestado de execução de objeto idêntico que na prática só o fornecedor anterior poderia apresentar. TCU tem jurisprudência consolidada contra isso.</div>
+            <div class="card-formula">% termos do objeto no atestado exigido &gt; 85% = suspeito (Acórdão TCU 2.800/2012)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span>Análise Textual (NLP)</span><span class="acc-arrow">›</span>
+      </button>
+      <div class="acc-body">
+        <div class="card-grid" style="gap:10px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Similaridade edital × proposta vencedora</span><span class="badge badge-red">Crítico</span></div>
+            <div class="card-body">Trechos do edital aparecem quase idênticos na proposta vencedora — evidência de que a empresa participou da redação. Aplicar TF-IDF + similaridade de cosseno.</div>
+            <div class="card-formula">cosine_similarity(TF-IDF(edital), TF-IDF(proposta)) &gt; 0.75</div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Termos técnicos proprietários</span><span class="badge badge-teal">NLP</span></div>
+            <div class="card-body">Identificar no texto do edital termos que são marcas registradas ou jargões exclusivos de um fornecedor. Construir dicionário de termos proprietários por setor.</div>
+            <div class="card-formula">NER + dicionário_termos_proprietários (INPI) → freq. de hits por edital</div>
+          </div>
+        </div>
+        <div class="highlight-box" style="margin-top:12px">
+          <div class="highlight-box-title">Oportunidade de pesquisa original</div>
+          <div class="highlight-box-body">Usar BERTimbau (BERT em português) para classificar cláusulas restritivas ou detectar termos proprietários em escala no corpus do PNCP seria uma contribuição metodológica relevante — a maioria dos trabalhos existentes analisa apenas variáveis numéricas, não o texto do edital.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 05: EMPRESAS DE FACHADA -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="fachada">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2 class="section-title">Empresas de Fachada (Shell Companies)</h2>
+  </div>
+  <p class="section-intro">A camada de ocultação mais usada. A detecção eficaz exige cruzar sinais de múltiplas fontes: cadastrais, operacionais e financeiros simultaneamente.</p>
+
+  <div class="card-grid card-grid-2">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Endereço inexistente ou inidôneo</span><span class="badge badge-red">Crítico</span></div>
+      <div class="card-body">Sede cadastrada no CNPJ não existe fisicamente, é terreno baldio, imóvel residencial simples, coworking sem registro ou escritório virtual.</div>
+      <div class="card-formula">geocode(endereço_CNPJ) → validar contra IPTU + Google Maps API</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Múltiplos CNPJs no mesmo endereço</span><span class="badge badge-red">Crítico</span></div>
+      <div class="card-body">Dezenas ou centenas de empresas cadastradas no mesmo endereço — padrão típico de fábrica de CNPJs.</div>
+      <div class="card-formula">n_CNPJs_endereço &gt; 10 (residencial) ou &gt; 50 (qualquer) = fábrica de CNPJ</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Ausência de funcionários (eSocial)</span><span class="badge badge-red">Crítico</span></div>
+      <div class="card-body">Empresa que executa contratos de grande vulto sem nenhum empregado registrado no eSocial. Impossibilidade operacional comprovável.</div>
+      <div class="card-formula">n_vínculos_eSocial = 0 + valor_contratos_ativos &gt; R$500k</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">CNAE incompatível com objeto</span><span class="badge badge-red">Crítico</span></div>
+      <div class="card-body">Empresa cadastrada para atividade econômica completamente diferente do objeto licitado.</div>
+      <div class="card-formula">similarity(CNAE_empresa, CATMAT/CATSER_objeto) &lt; 0.30 = incompatível</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Receita quase 100% pública</span><span class="badge badge-amber">Alto risco</span></div>
+      <div class="card-body">Empresa tem 95%+ da receita de contratos públicos com um único órgão — sem carteira de clientes privados.</div>
+      <div class="card-formula">receita_pública / receita_total &gt; 0.95 + n_clientes_privados &lt; 2</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Ciclo abertura–contratos–encerramento</span><span class="badge badge-purple">Avançado</span></div>
+      <div class="card-body">CPF que abre empresa, vence contratos, encerra e repete o ciclo — evitando fiscalização contínua.</div>
+      <div class="card-formula">ciclo: abertura → contratos → encerramento → nova abertura &lt; 3 anos médio</div>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <div class="highlight-box-title">Score composto para triagem</div>
+    <div class="highlight-box-body">Combine os sinais em um score ponderado: endereço inidôneo (peso 2), múltiplos CNPJs (peso 2), CNPJ recém-criado (peso 1.5), ausência de funcionários (peso 2), CNAE incompatível (peso 2), receita 100% pública (peso 1.5), capital irrisório (peso 1), dívidas fiscais (peso 1). Score &gt; 50% do máximo → auditoria prioritária. Treinamento supervisionado (XGBoost + SHAP) com casos TCU como ground truth.</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 06: SOBREPREÇO E SUPERFATURAMENTO -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="sobreprecio">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2 class="section-title">Sobrepreço e Superfaturamento</h2>
+  </div>
+  <p class="section-intro">Dois conceitos frequentemente confundidos com implicações metodológicas distintas. A distinção correta é fundamental para construir pipelines de detecção adequados.</p>
+
+  <div class="compare-grid" style="margin-bottom:20px">
+    <div class="compare-card compare-red">
+      <div class="compare-title">Sobrepreço</div>
+      <div class="compare-body">Preço unitário contratado <strong>acima</strong> do valor de mercado. O problema está no <strong>preço</strong> — o item pode ter sido entregue corretamente, mas foi cobrado a mais por unidade. Ocorre <strong>antes ou na contratação</strong> — no orçamento, no edital ou na proposta.</div>
+    </div>
+    <div class="compare-card compare-amber">
+      <div class="compare-title">Superfaturamento</div>
+      <div class="compare-body">Cobrança por <strong>quantidade, qualidade ou especificação</strong> diferente do entregue. O problema está na <strong>execução</strong> — preço pode ser razoável, mas entregou-se menos, pior ou diferente. Ocorre <strong>durante a execução</strong> — nas medições e pagamentos.</div>
+    </div>
+  </div>
+
+  <div class="formula-block">dano_total = sobrepreço_unitário × qtd_contratada + (qtd_contratada − qtd_entregue) × preço_pago</div>
+
+  <div class="card-grid" style="gap:10px; margin-top:16px">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Detecção de sobrepreço — pesquisa de preços</span><span class="badge badge-red">Sobrepreço</span></div>
+      <div class="card-body">Comparar com Painel de Preços, SINAPI, SICRO e NF-e similares. TCU usa desvio de 10% acima da mediana como limiar relevante.</div>
+      <div class="card-formula">(preço_contratado - mediana_mercado) / mediana_mercado &gt; 0.10 = sobrepreço</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Detecção de sobrepreço — BDI irregular</span><span class="badge badge-red">Sobrepreço</span></div>
+      <div class="card-body">BDI acima do padrão setorial inflaciona o preço final. TCU fixou parâmetros por tipo de obra (Acórdão 2.622/2013).</div>
+      <div class="card-formula">BDI obras normais: 22–25% · BDI equipamentos: 12–15% · acima = sobrepreço</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Detecção de superfaturamento — medições</span><span class="badge badge-amber">Superfaturamento</span></div>
+      <div class="card-body">Comparar boletins de medição com evidências físicas: fotos georreferenciadas, laudos técnicos, imagens de satélite (obras).</div>
+      <div class="card-formula">superfaturamento_qtd = (qtd_medida - qtd_executada) × preço_unitário_pago</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Jogo de planilha (price loading)</span><span class="badge badge-red">Combinado</span></div>
+      <div class="card-body">Licitante oferece preços altos em itens com grande volume previsto e baixos em itens de baixo volume — total competitivo, mas execução maximiza recebimento.</div>
+      <div class="card-formula">correlação entre desvio_preço_unitário_i e variação_volume_i = jogo de planilha</div>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <div class="highlight-box-title">Ferramentas oficiais de referência de preços</div>
+    <div class="highlight-box-body"><strong>SINAPI</strong> (Caixa/IBGE) — construção civil, atualizado mensalmente por estado. <strong>SICRO</strong> (DNIT) — obras rodoviárias. <strong>Painel de Preços</strong> (SEGES/MGI) — compras federais, API pública disponível. <strong>SIASG/Comprasnet</strong> — histórico de preços praticados.</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 07: FRACIONAMENTO ILÍCITO -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="fracionamento">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <h2 class="section-title">Fracionamento Ilícito</h2>
+  </div>
+  <p class="section-intro">Uma das fraudes mais fáceis de cometer e mais difíceis de provar — cada contrato individual parece legítimo. A detecção exige visão agregada temporal e por objeto.</p>
+
+  <div class="limit-grid">
+    <div class="limit-card">
+      <div class="limit-val">R$ 50k</div>
+      <div class="limit-lbl">Obras e serviços de engenharia geral (Lei 14.133/2021, art. 75)</div>
+    </div>
+    <div class="limit-card">
+      <div class="limit-val">R$ 100k</div>
+      <div class="limit-lbl">Obras e serviços de engenharia de infraestrutura</div>
+    </div>
+    <div class="limit-card">
+      <div class="limit-val">R$ 50k</div>
+      <div class="limit-lbl">Outros serviços e compras em geral</div>
+    </div>
+    <div class="limit-card">
+      <div class="limit-val">10%</div>
+      <div class="limit-lbl">Limite acumulado anual por objeto / unidade gestora</div>
+    </div>
+  </div>
+
+  <div class="card-grid" style="gap:10px">
+    <div class="card">
+      <div class="card-header"><span class="card-title">Bunching estatístico</span><span class="badge badge-red">Crítico</span></div>
+      <div class="card-body">Em distribuição legítima, contratos se distribuem uniformemente abaixo do limite. Pico anômalo imediatamente abaixo (ex: R$49.500–R$49.999) indica manipulação deliberada. Técnica originada na detecção de evasão fiscal (Kleven &amp; Waseem, 2013).</div>
+      <div class="card-formula">bunching_score = f([0.95×limite, limite]) / f([0.85×limite, 0.95×limite]) → ratio &gt;&gt; 1 = fracionamento</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Similaridade textual de objetos (NLP)</span><span class="badge badge-teal">NLP</span></div>
+      <div class="card-body">Gestores sofisticados variam levemente a descrição do objeto para dificultar agrupamento automático. TF-IDF + cosseno entre descrições revela o padrão.</div>
+      <div class="card-formula">similarity(objeto_A, objeto_B) &gt; 0.70 + mesmo_fornecedor + mesmo_período</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Intervalo entre contratos consecutivos</span><span class="badge badge-red">Crítico</span></div>
+      <div class="card-body">Contratos do mesmo objeto e fornecedor assinados com intervalo de dias ou semanas — necessidades previsíveis devem ser licitadas globalmente.</div>
+      <div class="card-formula">Δt(contrato_i, contrato_i+1) &lt; 30 dias + mesmo_objeto_fornecedor</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Fracionamento entre unidades gestoras</span><span class="badge badge-purple">Sofisticado</span></div>
+      <div class="card-body">Objeto único dividido entre unidades administrativas distintas do mesmo órgão (superintendências regionais), cada uma abaixo do limite individual.</div>
+      <div class="card-formula">Σ dispensas(mesmo_CNPJ_fornecedor) por unidades_do_mesmo_órgão &gt; limite</div>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <div class="highlight-box-title">Oportunidade de pesquisa original</div>
+    <div class="highlight-box-body">A aplicação da técnica de bunching (originada na economia fiscal para detectar evasão tributária) à detecção de fracionamento ilícito em contratações públicas tem pouquíssima literatura empírica no Brasil — representando uma contribuição metodológica original relevante para o doutorado.</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 08: DISPENSA INDEVIDA -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="dispensa">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <h2 class="section-title">Dispensa Indevida de Licitação</h2>
+  </div>
+  <p class="section-intro">A porta de entrada mais comum para a corrupção sistêmica. A Lei 14.133/2021 lista hipóteses taxativas (art. 74–75) — as mais abusadas estão detalhadas abaixo.</p>
+
+  <div class="accordion">
+    <div class="acc-item open">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span>Hipóteses Legais Mais Abusadas</span><span class="acc-arrow">›</span>
+      </button>
+      <div class="acc-body">
+        <div class="card-grid" style="gap:10px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Emergência fabricada (art. 75, VIII)</span><span class="badge badge-red">Mais frequente</span></div>
+            <div class="card-body">Situação de urgência criada ou agravada pela omissão do gestor que não planejou a contratação. Padrões suspeitos: emergências que se repetem todo ano no mesmo objeto.</div>
+            <div class="card-formula">n_emergências_mesmo_objeto_por_ano &gt; 1 = emergência estrutural disfarçada</div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Notória especialização fictícia (art. 74, III)</span><span class="badge badge-red">Alto abuso</span></div>
+            <div class="card-body">Contratação direta alegando expertise única. Abusada para consultorias, advogados e palestrantes quando na verdade há múltiplos concorrentes potenciais.</div>
+            <div class="card-formula">n_concorrentes_potenciais &gt; 3 → inexigibilidade questionável</div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Fornecedor exclusivo fictício (art. 74, I)</span><span class="badge badge-amber">Alto risco</span></div>
+            <div class="card-body">Declaração de exclusividade quando há concorrência. Instrução processual superficial com especificações que artificialmente eliminam concorrentes.</div>
+            <div class="card-formula">n_fornecedores_CATMAT/CATSER &gt; 1 → exclusividade falsa</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-trigger" onclick="toggleAcc(this)">
+        <span>Padrões Quantitativos de Detecção</span><span class="acc-arrow">›</span>
+      </button>
+      <div class="acc-body">
+        <div class="card-grid" style="gap:10px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Taxa de dispensa por órgão</span><span class="badge badge-red">Crítico</span></div>
+            <div class="card-body">Proporção de contratos via dispensa/inexigibilidade sobre o total. Órgãos com taxa acima de 2σ da média do setor são candidatos prioritários a auditoria.</div>
+            <div class="card-formula">taxa_dispensa = n_dispensas / n_contratos_total · z-score vs. média setor &gt; 2σ</div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Concentração em fornecedor único (HHI)</span><span class="badge badge-red">Crítico</span></div>
+            <div class="card-body">Índice Herfindahl-Hirschman aplicado à distribuição de contratos por fornecedor dentro de um órgão. Alta concentração indica captura institucional.</div>
+            <div class="card-formula">HHI_dispensa(órgão) = Σ(share_i)² → &gt; 0.25 = mercado capturado</div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Spike após troca de gestor</span><span class="badge badge-amber">Alto risco</span></div>
+            <div class="card-body">Aumento súbito de dispensas coincidente com nomeação de novo ordenador de despesa — gestor direcionando contratações antes de estabelecer controles.</div>
+            <div class="card-formula">Δ(n_dispensas) em [t_nomeação, t_nomeação + 90d] &gt; 2σ = alerta</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 09: RED FLAGS -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="redflags">
+  <div class="section-header">
+    <span class="section-num">09</span>
+    <h2 class="section-title">Catálogo de Red Flags</h2>
+  </div>
+  <p class="section-intro">18 indicadores de alerta organizados por fase do processo licitatório e severidade. Síntese operacional de todos os mecanismos de fraude.</p>
+
+  <div style="margin-bottom:20px">
+    <div class="section-intro" style="font-size:13px; margin-bottom:12px; font-style:normal; font-weight:600; color:#eef0e0">Fase Pré-licitatória</div>
+    <div class="rf-list">
+      <div class="rf-item">
+        <div class="rf-num">RF01</div>
+        <div class="rf-content">
+          <div class="rf-title">Especificação técnica que identifica fornecedor único</div>
+          <div class="rf-desc">Requisitos que só um fornecedor atende, mesmo sem citar a marca. Combinação improvável de atributos técnicos.</div>
+          <div class="rf-tags"><span class="badge badge-red">Crítico</span><span class="badge badge-purple">Direcionamento</span></div>
+        </div>
+      </div>
+      <div class="rf-item">
+        <div class="rf-num">RF02</div>
+        <div class="rf-content">
+          <div class="rf-title">Prazo de publicação no limite mínimo legal</div>
+          <div class="rf-desc">Edital publicado com prazo exatamente igual ao mínimo — suficiente para o favorecido, insuficiente para novos concorrentes.</div>
+          <div class="rf-tags"><span class="badge badge-amber">Alto risco</span><span class="badge badge-purple">Direcionamento</span></div>
+        </div>
+      </div>
+      <div class="rf-item">
+        <div class="rf-num">RF03</div>
+        <div class="rf-content">
+          <div class="rf-title">Exigências de habilitação desproporcionais ao objeto</div>
+          <div class="rf-desc">Capital social, tempo de mercado, atestados ou certificações que só o favorecido possui ou pode obter no prazo.</div>
+          <div class="rf-tags"><span class="badge badge-red">Crítico</span><span class="badge badge-purple">Direcionamento</span></div>
+        </div>
+      </div>
+      <div class="rf-item">
+        <div class="rf-num">RF04</div>
+        <div class="rf-content">
+          <div class="rf-title">Alta similaridade textual edital × proposta vencedora</div>
+          <div class="rf-desc">Trechos do TR/edital aparecem quase idênticos na proposta — evidência de participação do vencedor na elaboração.</div>
+          <div class="rf-tags"><span class="badge badge-red">Crítico</span><span class="badge badge-purple">Direcionamento</span><span class="badge badge-teal">NLP</span></div>
+          <div class="card-formula" style="margin-top:6px">cosine_sim(TF-IDF(edital), TF-IDF(proposta)) &gt; 0.75</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:20px">
+    <div class="section-intro" style="font-size:13px; margin-bottom:12px; font-style:normal; font-weight:600; color:#eef0e0">Fase de Competição</div>
+    <div class="rf-list">
+      <div class="rf-item">
+        <div class="rf-num">RF05</div>
+        <div class="rf-content">
+          <div class="rf-title">Participante único habilitado de forma recorrente</div>
+          <div class="rf-desc">Mesmo órgão, mesmo objeto, um único participante em múltiplos certames consecutivos.</div>
+          <div class="rf-tags"><span class="badge badge-red">Crítico</span><span class="badge badge-purple">Direcionamento</span><span class="badge badge-teal">Conluio</span></div>
+          <div class="card-formula" style="margin-top:6px">n_participantes_habilitados = 1 em &gt;50% dos certames do órgão/objeto</div>
+        </div>
+      </div>
+      <div class="rf-item">
+        <div class="rf-num">RF06</div>
+        <div class="rf-content">
+          <div class="rf-title">Margem 1º/2º colocado sistematicamente menor que 2%</div>
+          <div class="rf-desc">Lances do vencedor e segundo colocado consistentemente próximos — padrão de cobertura (cover bidding).</div>
+          <div class="rf-tags"><span class="badge badge-red">Crítico</span><span class="badge badge-teal">Conluio</span></div>
+        </div>
+      </div>
+      <div class="rf-item">
+        <div class="rf-num">RF07</div>
+        <div class="rf-content">
+          <div class="rf-title">Rodízio de vencedores entre empresas vinculadas</div>
+          <div class="rf-desc">Empresas com vínculos ocultos alternam vitórias por lote, período ou órgão — simulando competição inexistente.</div>
+          <div class="rf-tags"><span class="badge badge-red">Crítico</span><span class="badge badge-teal">Conluio</span></div>
+        </div>
+      </div>
+      <div class="rf-item">
+        <div class="rf-num">RF08</div>
+        <div class="rf-content">
+          <div class="rf-title">Metadados idênticos em propostas de empresas distintas</div>
+          <div class="rf-desc">PDFs de concorrentes com mesmo autor, mesma máquina ou diferença de minutos no timestamp de criação.</div>
+          <div class="rf-tags"><span class="badge badge-red">Crítico</span><span class="badge badge-teal">Conluio</span></div>
+          <div class="card-formula" style="margin-top:6px">|timestamp_A - timestamp_B| &lt; 60s OU autor_A == autor_B</div>
+        </div>
+      </div>
+      <div class="rf-item">
+        <div class="rf-num">RF09</div>
+        <div class="rf-content">
+          <div class="rf-title">Desvio da Lei de Benford nos valores de lance</div>
+          <div class="rf-desc">Distribuição dos primeiros dígitos dos lances se afasta do padrão logarítmico natural — evidência de manipulação.</div>
+          <div class="rf-tags"><span class="badge badge-amber">Alto risco</span><span class="badge badge-teal">Conluio</span></div>
+          <div class="card-formula" style="margin-top:6px">P(d) = log₁₀(1+1/d) → teste χ² ou KS vs. distribuição observada</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:20px">
+    <div class="section-intro" style="font-size:13px; margin-bottom:12px; font-style:normal; font-weight:600; color:#eef0e0">Vínculos e Associações</div>
+    <div class="rf-list">
+      <div class="rf-item">
+        <div class="rf-num">RF10</div>
+        <div class="rf-content">
+          <div class="rf-title">CPF de servidor na QSA da empresa vencedora ou familiar</div>
+          <div class="rf-desc">Agente público ou parente de 1º/2º grau como sócio, procurador ou representante do fornecedor contratado.</div>
+          <div class="rf-tags"><span class="badge badge-red">Crítico</span><span class="badge badge-purple">Associação oculta</span></div>
+          <div class="card-formula" style="margin-top:6px">CPF_servidor ∈ QSA_empresa OU CPF_familiar ∈ QSA_empresa</div>
+        </div>
+      </div>
+      <div class="rf-item">
+        <div class="rf-num">RF11</div>
+        <div class="rf-content">
+          <div class="rf-title">Porta giratória: ex-servidor entra na empresa contratada</div>
+          <div class="rf-desc">Servidor exonerado passa a integrar empresa que foi por ele fiscalizada ou favorecida em menos de 12 meses.</div>
+          <div class="rf-tags"><span class="badge badge-red">Crítico</span><span class="badge badge-purple">Associação oculta</span></div>
+        </div>
+      </div>
+      <div class="rf-item">
+        <div class="rf-num">RF12</div>
+        <div class="rf-content">
+          <div class="rf-title">Múltiplos CNPJs no mesmo endereço / sócio laranja</div>
+          <div class="rf-desc">Dezenas de empresas no mesmo endereço residencial; sócio com renda incompatível com o porte da empresa.</div>
+          <div class="rf-tags"><span class="badge badge-red">Crítico</span><span class="badge badge-purple">Fachada</span></div>
+        </div>
+      </div>
+      <div class="rf-item">
+        <div class="rf-num">RF13</div>
+        <div class="rf-content">
+          <div class="rf-title">CNPJ criado menos de 6 meses antes da licitação</div>
+          <div class="rf-desc">Empresa sem histórico comercial, aberta especificamente para participar do certame e vencer contratos de grande valor.</div>
+          <div class="rf-tags"><span class="badge badge-amber">Alto risco</span><span class="badge badge-purple">Fachada</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:20px">
+    <div class="section-intro" style="font-size:13px; margin-bottom:12px; font-style:normal; font-weight:600; color:#eef0e0">Fase de Execução e Pagamento</div>
+    <div class="rf-list">
+      <div class="rf-item">
+        <div class="rf-num">RF14</div>
+        <div class="rf-content">
+          <div class="rf-title">Valores concentrados abaixo do limite de dispensa (bunching)</div>
+          <div class="rf-desc">Pico estatístico anômalo de contratos imediatamente abaixo de R$50k ou R$100k — fracionamento deliberado.</div>
+          <div class="rf-tags"><span class="badge badge-red">Crítico</span><span class="badge badge-purple">Fracionamento</span></div>
+        </div>
+      </div>
+      <div class="rf-item">
+        <div class="rf-num">RF15</div>
+        <div class="rf-content">
+          <div class="rf-title">Preço contratado acima de 10% da mediana de mercado</div>
+          <div class="rf-desc">Desvio sistemático em relação ao Painel de Preços, SINAPI ou SICRO — indicativo de sobrepreço embutido.</div>
+          <div class="rf-tags"><span class="badge badge-red">Crítico</span><span class="badge badge-purple">Sobrepreço</span></div>
+        </div>
+      </div>
+      <div class="rf-item">
+        <div class="rf-num">RF16</div>
+        <div class="rf-content">
+          <div class="rf-title">Aditivos contratuais frequentes acima de 25%</div>
+          <div class="rf-desc">Contratos que iniciam com valor baixo e crescem via aditivos — estratégia de vencer com preço baixo e lucrar na execução.</div>
+          <div class="rf-tags"><span class="badge badge-amber">Alto risco</span><span class="badge badge-purple">Superfaturamento</span></div>
+        </div>
+      </div>
+      <div class="rf-item">
+        <div class="rf-num">RF17</div>
+        <div class="rf-content">
+          <div class="rf-title">Empresa sem funcionários executando contratos &gt; R$500k</div>
+          <div class="rf-desc">Zero vínculos no eSocial para empresa com contratos ativos de centenas de milhares de reais — impossibilidade operacional.</div>
+          <div class="rf-tags"><span class="badge badge-red">Crítico</span><span class="badge badge-purple">Fachada</span></div>
+        </div>
+      </div>
+      <div class="rf-item">
+        <div class="rf-num">RF18</div>
+        <div class="rf-content">
+          <div class="rf-title">Receita &gt;90% proveniente de único órgão público</div>
+          <div class="rf-desc">Empresa criada para capturar recursos de um órgão específico — sem carteira de clientes privados ou diversificação.</div>
+          <div class="rf-tags"><span class="badge badge-amber">Alto risco</span><span class="badge badge-purple">Fachada</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MATRIX -->
+  <div style="margin-top:28px">
+    <div class="section-intro" style="font-size:13px; margin-bottom:14px; font-style:normal; font-weight:600; color:#eef0e0">Matriz: Severidade × Detectabilidade Automatizada</div>
+    <div class="matrix-wrap">
+      <table class="matrix-table">
+        <tr>
+          <th style="width:100px"></th>
+          <th>Baixa detectabilidade</th>
+          <th>Média detectabilidade</th>
+          <th>Alta detectabilidade</th>
+        </tr>
+        <tr>
+          <td class="row-head">Alta severidade</td>
+          <td class="matrix-cell mc-red">Emergência fabricada · Porta giratória · Serviço fantasma</td>
+          <td class="matrix-cell mc-red">Metadados PDF idênticos (RF08) · Sobrepreço (RF15) · Sócio servidor (RF10)</td>
+          <td class="matrix-cell mc-red">Sem funcionários (RF17) · Bunching (RF14) · Participante único (RF05)</td>
+        </tr>
+        <tr>
+          <td class="row-head">Média severidade</td>
+          <td class="matrix-cell mc-amber">Subcontratação vinculada · Fiscal sem qualificação · Pagamento antecipado</td>
+          <td class="matrix-cell mc-amber">Aditivos &gt;25% (RF16) · Rodízio vencedores (RF07) · Porta giratória (RF11)</td>
+          <td class="matrix-cell mc-amber">Lei de Benford (RF09) · CV baixo de lances · HHI dispensas</td>
+        </tr>
+        <tr>
+          <td class="row-head">Baixa severidade</td>
+          <td class="matrix-cell mc-teal">Impugnações negadas · Comissão com vínculo · Recursos seletivos</td>
+          <td class="matrix-cell mc-teal">Prazo mínimo publicação (RF02) · Sazonalidade artificial · Recursos</td>
+          <td class="matrix-cell mc-teal">CNPJ recém-criado (RF13) · Múltiplos CNPJs endereço (RF12) · Dispensa em série</td>
+        </tr>
+      </table>
+    </div>
+    <p style="font-size:11px; color:var(--text3); margin-top:8px; font-family:var(--mono)">Prioridade de automação: quadrante superior direito (alta severidade + alta detectabilidade automática)</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 10: METODOLOGIA -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="metodologia">
+  <div class="section-header">
+    <span class="section-num">10</span>
+    <h2 class="section-title">Framework Metodológico Integrado</h2>
+  </div>
+  <p class="section-intro">Arquitetura metodológica para pesquisa de doutorado em detecção de fraudes em licitações públicas — integrando fontes de dados, técnicas e validação empírica.</p>
+
+  <div style="margin-bottom:28px">
+    <div class="section-intro" style="font-size:13px; margin-bottom:14px; font-style:normal; font-weight:600; color:#eef0e0">Pipeline de Análise em Três Camadas</div>
+    <div class="method-steps">
+      <div class="method-step">
+        <div class="method-step-title">Coleta e normalização de dados</div>
+        <div class="method-step-body">Extrair dados do PNCP (API REST), SIASG, dump CNPJ da Receita Federal, eSocial (via CGU/TCU), Painel de Preços e TSE. Normalizar endereços (fuzzy matching), deduplificar CNPJs e criar chaves de cruzamento entre bases.</div>
+      </div>
+      <div class="method-step">
+        <div class="method-step-title">Análise estrutural — grafo de relacionamentos</div>
+        <div class="method-step-body">Construir grafo heterogêneo com CPFs, CNPJs, contratos e órgãos como nós. Calcular betweenness centrality, eigenvector centrality e detectar comunidades (Louvain). Rastrear caminhos de comprimento ≤ 2 entre servidores e empresas vencedoras.</div>
+      </div>
+      <div class="method-step">
+        <div class="method-step-title">Análise estatística multivariada</div>
+        <div class="method-step-body">Correlação de lances (Pearson/Spearman), Lei de Benford, bunching por limite de dispensa, HHI de concentração de contratos, análise temporal de spikes pós-troca de gestor, coeficiente de variação por certame.</div>
+      </div>
+      <div class="method-step">
+        <div class="method-step-title">Análise textual (NLP)</div>
+        <div class="method-step-body">TF-IDF + similaridade de cosseno entre editais e propostas. BERTimbau para classificação de cláusulas restritivas. NER com dicionário de termos proprietários (INPI). Análise de densidade e complexidade de requisitos por edital.</div>
+      </div>
+      <div class="method-step">
+        <div class="method-step-title">Construção do índice composto e validação</div>
+        <div class="method-step-body">Combinar os 18 red flags em score ponderado. Treinar XGBoost com casos julgados pelo TCU como ground truth (y=irregular/regular). Usar SHAP para interpretabilidade dos pesos. Validar com conjunto de teste independente.</div>
+      </div>
+      <div class="method-step">
+        <div class="method-step-title">Aplicação em escala e análise sistêmica</div>
+        <div class="method-step-body">Aplicar o índice a todos os certames do PNCP para identificar padrões por setor, órgão e região. Análise de evolução temporal. Comparar com casos já identificados pela CGU para calibração final do modelo.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:28px">
+    <div class="section-intro" style="font-size:13px; margin-bottom:14px; font-style:normal; font-weight:600; color:#eef0e0">Fontes de Dados Abertas</div>
+    <div class="source-grid">
+      <div class="source-card">
+        <div class="source-title">Contratos e licitações</div>
+        <ul class="source-list">
+          <li>PNCP (API REST aberta)</li>
+          <li>SIASG / ComprasNet</li>
+          <li>SIAFI (empenhos)</li>
+          <li>Portais estaduais (BEC, SIAD)</li>
+          <li>Diário Oficial (DOU)</li>
+        </ul>
+      </div>
+      <div class="source-card">
+        <div class="source-title">Empresas e sócios</div>
+        <ul class="source-list">
+          <li>CNPJ/QSA — Receita Federal</li>
+          <li>Juntas Comerciais (DREI)</li>
+          <li>SICAF · CEIS · CEPIM</li>
+          <li>NF-e / SPED</li>
+          <li>eSocial (RAIS, CAGED)</li>
+        </ul>
+      </div>
+      <div class="source-card">
+        <div class="source-title">Servidores públicos</div>
+        <ul class="source-list">
+          <li>SIAPE (servidores federais)</li>
+          <li>Portal da Transparência</li>
+          <li>Declarações de bens CGU</li>
+          <li>DOU (nomeações, exonerações)</li>
+          <li>eSocial (vínculos)</li>
+        </ul>
+      </div>
+      <div class="source-card">
+        <div class="source-title">Referências de preço</div>
+        <ul class="source-list">
+          <li>Painel de Preços (SEGES)</li>
+          <li>SINAPI (Caixa/IBGE)</li>
+          <li>SICRO (DNIT)</li>
+          <li>CATMAT · CATSER</li>
+          <li>SIASG histórico</li>
+        </ul>
+      </div>
+      <div class="source-card">
+        <div class="source-title">Controle e sanções</div>
+        <ul class="source-list">
+          <li>Acórdãos TCU (e-TCU)</li>
+          <li>CGU (PADs, sindicâncias)</li>
+          <li>CADIN · PGFN</li>
+          <li>TRF / STJ (processos)</li>
+          <li>CEAF · CEIS</li>
+        </ul>
+      </div>
+      <div class="source-card">
+        <div class="source-title">Complementares</div>
+        <ul class="source-list">
+          <li>TSE (doações eleitorais)</li>
+          <li>COAF (movimentações)</li>
+          <li>IPTU municipal</li>
+          <li>Cartórios (procurações)</li>
+          <li>Google Maps API</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:28px">
+    <div class="section-intro" style="font-size:13px; margin-bottom:14px; font-style:normal; font-weight:600; color:#eef0e0">Referências-chave para o Referencial Teórico</div>
+    <div class="card-grid card-grid-2">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:6px">Fazekas &amp; Kocsis (2017)</div>
+        <div class="card-body">Corrupt Contracting: Controlling Partisan Favoritism in Public Procurement. Um dos trabalhos mais citados sobre red flags em contratação pública europeia. Government and Opposition.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:6px">Kleven &amp; Waseem (2013)</div>
+        <div class="card-body">Using Notches to Uncover Optimization Frictions. Referência metodológica para a técnica de bunching aplicada a limiares regulatórios. The Quarterly Journal of Economics.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:6px">Acórdão TCU 2.622/2013-Plenário</div>
+        <div class="card-body">Parâmetros de BDI por tipo de obra de engenharia. Referência obrigatória para metodologia de detecção de sobrepreço em construção civil.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:6px">CGU — Sistema Alice</div>
+        <div class="card-body">Sistema de Análise de Licitações e Contratos da Controladoria-Geral da União. Benchmark nacional para detecção automatizada de irregularidades.</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:6px">Lei 14.133/2021</div>
+        <div class="card-body">Nova Lei de Licitações e Contratos Administrativos. Art. 74–75 (hipóteses de dispensa), art. 125 (limites de aditivo), art. 25 §2° (superfaturamento).</div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:6px">GRECO — Conselho da Europa</div>
+        <div class="card-body">Metodologia consolidada para avaliação de risco de integridade em contratações públicas. Relatórios comparativos internacionais disponíveis publicamente.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <div class="highlight-box-title">Contribuições originais identificadas para o doutorado</div>
+    <div class="highlight-box-body">
+      <strong style="color:#eef0e0">1. Análise textual de editais em escala:</strong> Aplicação de BERTimbau ao corpus do PNCP para classificar cláusulas restritivas — maioria dos trabalhos analisa apenas variáveis numéricas.<br><br>
+      <strong style="color:#eef0e0">2. Bunching em contratações públicas:</strong> Aplicação da técnica de bunching (originada em evasão fiscal) para detecção de fracionamento — praticamente inexplorada empiricamente no Brasil.<br><br>
+      <strong style="color:#eef0e0">3. Emergências crônicas:</strong> Padrão de emergências que se repetem todo ano no mesmo objeto como indicador de dispensa indevida estrutural — tema pouco explorado com evidência quantitativa.<br><br>
+      <strong style="color:#eef0e0">4. Índice composto validado:</strong> Formalizar o framework de red flags como índice quantitativo com pesos calibrados via XGBoost + SHAP, treinado em casos TCU como ground truth.
+    </div>
+  </div>
+</section>
+
+</div><!-- /wrapper -->
+</main>
+
+<footer>
+  <div class="wrapper">
+    <div class="footer-inner">
+      <div class="footer-text">Fraudes em Licitações Públicas — Guia de Pesquisa para Doutorado</div>
+      <div class="footer-text">Gerado com <span class="footer-accent">Claude</span> · Anthropic · 2026</div>
+    </div>
+  </div>
+</footer>
+
+<!-- SCROLL TOP -->
+<a href="#" class="scroll-top" id="scrollTop" title="Voltar ao topo">↑</a>
+
+<script>
+// Accordion
+function toggleAcc(btn) {
+  const item = btn.closest('.acc-item');
+  item.classList.toggle('open');
+}
+
+// Scroll top
+const scrollBtn = document.getElementById('scrollTop');
+window.addEventListener('scroll', () => {
+  scrollBtn.classList.toggle('visible', window.scrollY > 400);
+});
+
+// Active nav link
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.toc-link');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.style.color = '');
+      const active = document.querySelector(`.toc-link[href="#${entry.target.id}"]`);
+      if (active) active.style.color = 'var(--accent)';
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
